@@ -23,6 +23,9 @@ namespace Duality
 
         [SerializeField] private float m_WolfTime = 0.1f;
 
+        [SerializeField]
+        private KeyCode ActionKey = KeyCode.J;
+
 
         float gravity
         {
@@ -37,10 +40,16 @@ namespace Duality
         float jumpVelocity => gravity * m_JumpTime;
 
 
+        private TileBase holdingTile = null;
         bool focused = true;
         Vector2 rawMovementInput;
         Vector2 dampedInput = Vector2.zero;
         Vector2 m_Velocity;
+        /// <summary>
+        /// 1 -> Right
+        /// -1 -> Left
+        /// </summary>
+        private int facing = 1;
         bool onGround = false;
         new BoxCollider2D collider;
         new SpriteRenderer renderer;
@@ -87,6 +96,64 @@ namespace Duality
         // Update is called once per frame
         void Update()
         {
+            UpdateMovement();
+            UpdateAction();
+        }
+
+        private void UpdateAction()
+        {
+            if(!onGround)
+                return;
+            var mapPos = transform.position.ToVector2Int();
+            var selectedBlock = Vector2Int.zero;
+            var selected = false;
+            if (holdingTile)
+            {
+                if (!IsColliderTile(mapPos + new Vector2Int(facing, -1)))
+                {
+                    selectedBlock = mapPos + new Vector2Int(facing, -1);
+                    selected = true;
+                }
+                else if (!IsColliderTile(mapPos + Vector2Int.right * facing))
+                {
+                    selectedBlock = mapPos + Vector2Int.right * facing;
+                    selected = true;
+                }
+            }
+            else
+            {
+                if (IsColliderTile(mapPos + Vector2Int.right * facing))
+                {
+                    selectedBlock = mapPos + Vector2Int.right * facing;
+                    selected = true;
+                }
+                else if (IsColliderTile(mapPos + new Vector2Int(facing, -1)))
+                {
+                    selectedBlock = mapPos + new Vector2Int(facing, -1);
+                    selected = true;
+                }
+            }
+
+            if (selected)
+            {
+                Utility.DebugDrawRect(new Rect(selectedBlock, Vector2.one), Color.yellow);
+            }
+
+            if (selected && Input.GetKeyDown(ActionKey))
+            {
+                if (holdingTile)
+                {
+                    holdingTile = GameMap.Instance.SetTileAt(selectedBlock, holdingTile);
+                }
+                else
+                {
+                    holdingTile = GameMap.Instance.RemoveTileAt(selectedBlock);
+                }
+            }
+        }
+
+        private void UpdateMovement()
+        {
             var movement = new Vector2();
             if (Input.GetKey(KeyCode.A))
                 movement += Vector2.left;
@@ -112,14 +179,17 @@ namespace Duality
             onGroundCache.Update(Time.time);
 
             if (rawMovementInput.x < 0)
+            {
                 renderer.flipX = true;
+                facing = -1;
+            }
             else if (rawMovementInput.x > 0)
+            {
                 renderer.flipX = false;
+                facing = 1;
+            }
         }
-
-        private void LateUpdate()
-        {
-        }
+        
 
         public void SetPositionVelocity(Vector2 pos, Vector2 velocity)
         {

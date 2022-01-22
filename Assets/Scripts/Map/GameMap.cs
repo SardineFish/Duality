@@ -20,5 +20,19 @@ namespace Duality
         {
             return _tilemap.GetTile(pos.ToVector3Int());
         }
+
+        public TileBase RemoveTileAt(Vector2 pos)
+        {
+            var tile = GetTileAt(pos);
+            _tilemap.SetTile(pos.ToVector3Int(), null);
+            return tile;
+        }
+
+        public TileBase SetTileAt(Vector2 pos, TileBase newTile)
+        {
+            var tile = GetTileAt(pos);
+            _tilemap.SetTile(pos.ToVector3Int(), newTile);
+            return tile;
+        }
     }
 }
