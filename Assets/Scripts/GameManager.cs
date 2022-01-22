@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using SardineFish.Utils;
@@ -18,5 +19,14 @@ public class GameManager : RuntimeSingleton<GameManager>
     public void LoadNextLevel()
     {
         Debug.Log("TODO: Load Next Level");
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        foreach (var pos     in m_stageDiamondPos)
+        {
+            Gizmos.DrawWireSphere(pos.ToVector3(0), 0.5f);
+        }
     }
 }
