@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
 using Random = UnityEngine.Random;
 
 namespace Ghost
@@ -15,18 +16,24 @@ namespace Ghost
         private List<Vector3> blobVel;
 
         public Camera cam;
+        public Animator anim;
+        public Transform eyesTransform;
 
         public float emitInterval = 0.5f;
         public float maxInitialSize = 40;
         public float maxInitialVel = 1;
         public float maxLifetime = 3;
+        public float eyesFollowCoeff = 20;
         private float emitCountdown;
+        private float maxVel;
+        private Vector3 cachedEyePosition;
         void Awake()
         {
             // props: xy:=position; w:=radius
             emitCountdown = emitInterval;
             blobs = new List<Vector4>();
             blobVel = new List<Vector3>();
+            maxVel = maxInitialVel;
         }
 
         private void OnEnable()
@@ -34,12 +41,28 @@ namespace Ghost
             emitCountdown = emitInterval;
             blobs = new List<Vector4>();
             blobVel = new List<Vector3>();
+            cachedEyePosition = eyesTransform.position;
+            CloseEyes();
+        }
+
+        public void OpenEyes()
+        {
+            if (anim) anim.SetTrigger("OpenEyes");
+            maxVel = maxInitialVel;
+        }
+
+        public void CloseEyes()
+        {
+            if (anim) anim.SetTrigger("CloseEyes");
+            maxVel = maxInitialVel * 0.4f;
         }
 
         void Update()
         {
             if (!material) return;
             if (!cam) return;
+            if (!anim) return;
+            if (!eyesTransform) return;
             
             var objectPos = cam.WorldToScreenPoint(transform.position);//transform.position;
             
@@ -49,13 +72,17 @@ namespace Ghost
                 float size = Random.Range(maxInitialSize / 2, maxInitialSize);
                 blobs.Add(new Vector4(objectPos.x, objectPos.y, 0, size));
                 blobVel.Add(new Vector3(
-                    Random.Range(-maxInitialVel, maxInitialVel),
-                    Random.Range(-maxInitialVel, maxInitialVel),
+                    Random.Range(-maxVel, maxVel),
+                    Random.Range(-maxVel, maxVel),
                     size
                     ));
                 emitCountdown = emitInterval;
             }
             emitCountdown -= Time.deltaTime;
+
+            var newPos = Vector3.Lerp(cachedEyePosition, transform.position, Time.deltaTime * eyesFollowCoeff);
+            newPos.z = -1;
+            eyesTransform.position = newPos;
             
             // emit from a world position toward a random dir
             // each pt then update 
@@ -71,7 +98,6 @@ namespace Ghost
                 pos.z += Time.deltaTime;
                 float life = blobs[i].z;
                 float maxSize = blobVel[i].z;
-                //pos.w = Mathf.Lerp(blobVel[i].z, 0, (life) / (maxLifetime));
                 if (life < maxLifetime * 0.15)
                 {
                     pos.w = Mathf.Lerp(0,maxSize, life / 0.15f);
@@ -85,12 +111,24 @@ namespace Ghost
 
             if (blobs.Count == 0) return;
             
-            //material.SetVectorArray("_Points", blobs);
             for (int i = 0; i < blobs.Count; i++)
             {
                 material.SetVector("_P" + i, blobs[i]);
             }
             material.SetInt("_NumPoints", Mathf.Min(blobs.Count, 16));
+
+            cachedEyePosition = eyesTransform.position;
+            
+            //---- DEBUG ----
+            if (Input.GetKeyDown(KeyCode.Y))
+            {
+                OpenEyes();
+            }
+
+            if (Input.GetKeyDown(KeyCode.U))
+            {
+                CloseEyes();
+            }
         }
     }
 }
