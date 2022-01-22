@@ -12,10 +12,10 @@ namespace Ghost
     {
         private int maxBlobs = 16;
         [SerializeField] private Material material;
+        private Material matInstance;
         private List<Vector4> blobs;
         private List<Vector3> blobVel;
 
-        public Camera cam;
         public Animator anim;
         public Transform eyesTransform;
 
@@ -34,6 +34,8 @@ namespace Ghost
             blobs = new List<Vector4>();
             blobVel = new List<Vector3>();
             maxVel = maxInitialVel;
+            matInstance = Instantiate<Material>(material);
+            GetComponent<SpriteRenderer>().material = matInstance;
         }
 
         private void OnEnable()
@@ -59,12 +61,11 @@ namespace Ghost
 
         void Update()
         {
-            if (!material) return;
-            if (!cam) return;
+            if (!matInstance) return;
             if (!anim) return;
             if (!eyesTransform) return;
-            
-            var objectPos = cam.WorldToScreenPoint(transform.position);//transform.position;
+
+            var objectPos = transform.position;
             
             // emit
             if (blobs.Count < maxBlobs && emitCountdown < 0)
@@ -113,9 +114,9 @@ namespace Ghost
             
             for (int i = 0; i < blobs.Count; i++)
             {
-                material.SetVector("_P" + i, blobs[i]);
+                matInstance.SetVector("_P" + i, blobs[i]);
             }
-            material.SetInt("_NumPoints", Mathf.Min(blobs.Count, 16));
+            matInstance.SetInt("_NumPoints", Mathf.Min(blobs.Count, 16));
 
             cachedEyePosition = eyesTransform.position;
             

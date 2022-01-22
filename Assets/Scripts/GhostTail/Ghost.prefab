@@ -52,7 +52,7 @@ MonoBehaviour:
   eyesTransform: {fileID: 4440683779106692538}
   emitInterval: 0.05
   maxInitialSize: 40
-  maxInitialVel: 60
+  maxInitialVel: 1
   maxLifetime: 0.6
   eyesFollowCoeff: 10
 --- !u!212 &7069808273600006704

@@ -81,15 +81,9 @@ Shader "Unlit/MetaballTail"
             }
 
             // dist to the shape union
-            float circles(half2 p)
+            float circles(half2 p, float4 _Points[16])
             {
                 float sum = 0;
-                float4 _Points[16] = {
-                    _P0, _P1, _P2, _P3,
-                    _P4, _P5, _P6, _P7,
-                    _P8, _P9, _P10, _P11,
-                    _P12, _P13, _P14, _P15,
-                };
                 for (int i = 0; i < _NumPoints; i++)
                 {
                     float d = circle(half3(p, 0), float3(_Points[i].xy, 0), _Points[i].w);
@@ -99,7 +93,7 @@ Shader "Unlit/MetaballTail"
                 return dist;
             }
 
-            float2 circlesNormal(half2 p)
+            float2 circlesNormal(half2 p, float4 pts[16])
             {
                 const float eps = 0.002f;
                 const half2 v1 = half2(1, 1);
@@ -107,21 +101,58 @@ Shader "Unlit/MetaballTail"
                 const half2 v3 = half2(1, -1);
                 const half2 v4 = half2(-1, 1);
                 return normalize(
-                    v1 * circles(p + v1*eps) +
-                    v2 * circles(p + v2*eps) +
-                    v3 * circles(p + v3*eps) +
-                    v4 * circles(p + v4*eps)
+                    v1 * circles(p + v1*eps, pts) +
+                    v2 * circles(p + v2*eps, pts) +
+                    v3 * circles(p + v3*eps, pts) +
+                    v4 * circles(p + v4*eps, pts)
                     );
+            }
+
+            float4 mmul(float4x4 m, float4 pt)
+            {
+                float4 pos = float4(pt.xy, 0, 1);
+                pos = mul(m, pos);
+                pos.y *= -1;
+                pos.xy = (pos.xy * 0.5) + 0.5;
+                pos.xy *= _ScreenParams.xy;
+                pos.zw = pt.zw;
+                return pos;
             }
 
             fixed4 frag (v2f i) : SV_Target
             {
+                float4x4 m = UNITY_MATRIX_VP;
                 // sample the texture
+                float4 ScreenPoints[16] = {
+                    #if 1
+                    mmul(m, _P0),
+                    mmul(m, _P1),
+                    mmul(m, _P2),
+                    mmul(m, _P3),
+                    mmul(m, _P4),
+                    mmul(m, _P5),
+                    mmul(m, _P6),
+                    mmul(m, _P7),
+                    mmul(m, _P8),
+                    mmul(m, _P9),
+                    mmul(m, _P10),
+                    mmul(m, _P11),
+                    mmul(m, _P12),
+                    mmul(m, _P13),
+                    mmul(m, _P14),
+                    mmul(m, _P15)
+                    #else
+                    _P0, _P1, _P2, _P3,
+                    _P4, _P5, _P6, _P7,
+                    _P8, _P9, _P10, _P11,
+                    _P12, _P13, _P14, _P15
+                    #endif
+                };
                 fixed4 col = tex2D(_MainTex, i.uv);
                 float2 uv = i.screenPos.xy / i.screenPos.w;
                 int2 xyCentered = (uv * _ScreenParams.xy);
                 xyCentered = xyCentered / 4 * 4;
-                float ccl = circles(xyCentered);
+                float ccl = circles(xyCentered, ScreenPoints);
                 if (ccl > 0) clip(-1);
                 if (ccl > -4)
                 {
@@ -129,7 +160,7 @@ Shader "Unlit/MetaballTail"
                     return col;
                 }
                 
-                float2 norm = circlesNormal(xyCentered);
+                float2 norm = circlesNormal(xyCentered, ScreenPoints);
 
                 float z = pow(saturate(-ccl * 0.04), 0.5);
                 float3 norm3 = normalize(float3(norm, z * 3));
@@ -141,6 +172,7 @@ Shader "Unlit/MetaballTail"
                 
                 // apply fog
                 UNITY_APPLY_FOG(i.fogCoord, col);
+
                 return col;
             }
             ENDCG
