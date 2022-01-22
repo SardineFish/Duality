@@ -57,6 +57,7 @@ Shader "Unlit/MetaballTail"
             float4 _P13;
             float4 _P14;
             float4 _P15;
+            float4 _Color;
             float _ShadowThreshold;
             float _ShadowStrength;
             float _EdgeStrength;
@@ -148,7 +149,7 @@ Shader "Unlit/MetaballTail"
                     _P12, _P13, _P14, _P15
                     #endif
                 };
-                fixed4 col = tex2D(_MainTex, i.uv);
+                fixed4 col = tex2D(_MainTex, i.uv) * _Color;
                 float2 uv = i.screenPos.xy / i.screenPos.w;
                 int2 xyCentered = (uv * _ScreenParams.xy);
                 xyCentered = xyCentered / 4 * 4;
@@ -156,7 +157,7 @@ Shader "Unlit/MetaballTail"
                 if (ccl > 0) clip(-1);
                 if (ccl > -4)
                 {
-                    col.rgb = _EdgeStrength;
+                    col.rgb = _EdgeStrength * _Color.rgb;
                     return col;
                 }
                 

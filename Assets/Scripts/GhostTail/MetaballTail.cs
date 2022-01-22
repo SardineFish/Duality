@@ -24,6 +24,8 @@ namespace Ghost
         public float maxInitialVel = 1;
         public float maxLifetime = 3;
         public float eyesFollowCoeff = 20;
+        public Color color = Color.white;
+        public Vector2 wind = Vector2.zero;
         private float emitCountdown;
         private float maxVel;
         private Vector3 cachedEyePosition;
@@ -95,6 +97,8 @@ namespace Ghost
                     blobVel.RemoveAt(i);
                     continue;
                 }
+
+                blobVel[i] = new Vector3(blobVel[i].x + wind.x, blobVel[i].y + wind.y, blobVel[i].z);
                 var pos = blobs[i] + new Vector4(blobVel[i].x, blobVel[i].y, 0, 0) * Time.deltaTime;
                 pos.z += Time.deltaTime;
                 float life = blobs[i].z;
@@ -117,6 +121,7 @@ namespace Ghost
                 matInstance.SetVector("_P" + i, blobs[i]);
             }
             matInstance.SetInt("_NumPoints", Mathf.Min(blobs.Count, 16));
+            matInstance.SetColor("_Color", color);
 
             cachedEyePosition = eyesTransform.position;
             
