@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: c16a3816b8b77497eb675c17e18f9c9c
+guid: c2e92a9fe95364996b859aaf3d80ff50
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -104,7 +104,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: liftWalk_0
+      name: liftIdle_White_0
       rect:
         serializedVersion: 2
         x: 3
@@ -118,14 +118,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 4d557764a0a8145e18c71954efa93a23
-      internalID: 1145625589
+      spriteID: 1d41d7be74dd74d3988f2fe15a7d0ddb
+      internalID: 106883706
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: liftWalk_1
+      name: liftIdle_White_1
       rect:
         serializedVersion: 2
         x: 35
@@ -133,14 +133,14 @@ TextureImporter:
         width: 27
         height: 30
       alignment: 9
-      pivot: {x: 0.5185185, y: 0}
+      pivot: {x: 0.4814815, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: d91cabf3678a04923a80d202e4e6feb5
-      internalID: 1780590638
+      spriteID: e1c3a2523e2be4545a429baea302afe0
+      internalID: -1573452274
       vertices: []
       indices: 
       edges: []
@@ -156,8 +156,8 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      liftWalk_1: 1780590638
-      liftWalk_0: 1145625589
+      liftIdle_White_1: -1573452274
+      liftIdle_White_0: 106883706
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

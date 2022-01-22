@@ -254,6 +254,7 @@ namespace Duality
                     target.transform.position = selectedBlock.ToVector3(GameMap.Instance.transform.position.z - 1);
                     target.transform.Translate(new Vector3(0.5f, 0.5f, 0));
                     holdingBlockObject.GetComponent<CriticalDamping>().Target = target.transform;
+                    holdingBlockObject.GetComponent<CriticalDamping>().velocity = Vector2.right * PickVelocity * facing;
                     this.SetTimeout(() =>
                     {
                         holdingTile = GameMap.Instance.SetTileAt(selectedBlock, holdingTile);
