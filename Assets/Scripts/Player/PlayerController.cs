@@ -70,6 +70,10 @@ namespace Duality
         [SerializeField] private List<TileBase> m_ColliderTiles;
         [SerializeField] private List<TileBase> m_MovableTiles;
         [SerializeField] private TileBase m_AirTile;
+        [SerializeField] private GameObject PickPrefab;
+        [SerializeField] private Transform PickUpHolder;
+        [SerializeField] private float PickTimeout;
+        [SerializeField] private float PickVelocity = 10;
 
         [SerializeField] private PlayerAnimations m_Animations;
 
@@ -104,6 +108,7 @@ namespace Duality
         StateCache jumpCache = new StateCache(0.2f);
         StateCache onGroundCache = new StateCache(0.1f);
         private PlayerState State = PlayerState.Idle;
+        private GameObject holdingBlockObject;
 
         public bool EnableControl
         {
@@ -188,10 +193,13 @@ namespace Duality
                     break;
                 case PlayerState.LiftUp:
                     await _playableTracks.PlayOnTrackWait(0, m_Animations.LiftUp);
+                    velocity = Vector2.zero;
                     ChangeState(PlayerState.Idle);
                     break;
                 case PlayerState.PutDown:
                     await _playableTracks.PlayOnTrackWait(0, m_Animations.PutDown);
+                    velocity=Vector2.zero;
+                    
                     ChangeState(PlayerState.Idle);
                     break;
             }
@@ -240,14 +248,36 @@ namespace Duality
             {
                 if (holdingTile)
                 {
-                    holdingTile = GameMap.Instance.SetTileAt(selectedBlock, holdingTile);
-                    holdingTile = null;
                     ChangeState(PlayerState.PutDown);
+                    var target = new GameObject();
+                    target.transform.position = selectedBlock.ToVector3(GameMap.Instance.transform.position.z - 1);
+                    target.transform.Translate(new Vector3(0.5f, 0.5f, 0));
+                    holdingBlockObject.GetComponent<CriticalDamping>().Target = target.transform;
+                    this.SetTimeout(() =>
+                    {
+                        holdingTile = GameMap.Instance.SetTileAt(selectedBlock, holdingTile);
+                        ChangeState(PlayerState.Idle);
+                        holdingTile = null;
+                        Destroy(holdingBlockObject);
+                        Destroy(target);
+                    }, PickTimeout);
                 }
                 else
                 {
                     holdingTile = GameMap.Instance.SetTileAt(selectedBlock, m_AirTile);
                     ChangeState(PlayerState.LiftUp);
+                    var obj = Instantiate(PickPrefab);
+                    obj.transform.position = selectedBlock.ToVector3(GameMap.Instance.transform.position.z - 1);
+                    obj.transform.Translate(new Vector3(0.5f, 0.5f, 0));
+                    var dampping = obj.GetOrAddComponent<CriticalDamping>();
+                    dampping.velocity = Vector3.up * PickVelocity;
+                    dampping.Target = PickUpHolder;
+                    holdingBlockObject = obj;
+                    this.SetTimeout(() =>
+                    {
+                        dampping.Target = null;
+                        obj.transform.SetParent(PickUpHolder);
+                    }, PickTimeout);
                 }
             }
         }

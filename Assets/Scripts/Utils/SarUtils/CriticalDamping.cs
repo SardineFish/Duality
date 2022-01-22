@@ -5,10 +5,11 @@ namespace SardineFish.Utils
 {
     public class CriticalDamping : MonoBehaviour
     {
-        [SerializeField] private Transform Target;
+        public Transform Target;
         [SerializeField] private float SmoothTime = 0.5f;
+        [SerializeField] private float AngularSmoothTime = 0.1f;
         
-        Vector3 velocity = Vector3.zero;
+        public Vector3 velocity = Vector3.zero;
         Quaternion angularVelocity = Quaternion.identity;
 
         private Vector3 CriticalDamp(Vector3 from, Vector3 to, ref Vector3 velocity, float smoothTime, float dt)
@@ -52,7 +53,7 @@ namespace SardineFish.Utils
 
             transform.position = CriticalDamp(transform.position, Target.position, ref velocity, SmoothTime,
                 Time.deltaTime);
-            transform.rotation = CriticalDamp(transform.rotation, Target.rotation, ref angularVelocity, SmoothTime, Time.deltaTime);
+            transform.rotation = CriticalDamp(transform.rotation, Target.rotation, ref angularVelocity, AngularSmoothTime, Time.deltaTime);
         }
 
         private void OnDrawGizmos()

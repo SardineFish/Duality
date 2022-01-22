@@ -102,7 +102,7 @@ namespace Duality
             if(!Config.DestroyOnFinish)
                 return;
 
-            Debug.Log($"{AnimationClip.IsValid()} {AnimationClip.GetTime()}");
+            //Debug.Log($"{AnimationClip.IsValid()} {AnimationClip.GetTime()}");
 
             if (AnimationClip.IsValid()
                 && AnimationClip.GetTime() >= AnimationClip.GetAnimationClip().length
