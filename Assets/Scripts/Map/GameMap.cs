@@ -9,6 +9,8 @@ namespace Duality
     {
         
         private Tilemap _tilemap;
+        [SerializeField] private Tilemap _collisionTile;
+        [SerializeField] private TileBase _backTile;
         protected void Awake()
         {
             _tilemap = GetComponent<Tilemap>();
@@ -31,6 +33,10 @@ namespace Duality
         {
             var tile = GetTileAt(pos);
             _tilemap.SetTile(pos.ToVector3Int(), newTile);
+            if(newTile == _backTile)
+                _collisionTile.SetTile(pos.ToVector3Int(), newTile);
+            else
+                _collisionTile.SetTile(pos.ToVector3Int(), null);
             // DualityMap._tilemap.SetTile(pos.ToVector3Int(), null);
             return tile;
         }
