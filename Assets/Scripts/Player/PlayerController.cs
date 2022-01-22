@@ -280,7 +280,7 @@ namespace Duality
                     obj.transform.position = selectedBlock.ToVector3(GameMap.Instance.transform.position.z - 1);
                     obj.transform.Translate(new Vector3(0.5f, 0.5f, 0));
                     var dampping = obj.GetOrAddComponent<CriticalDamping>();
-                    dampping.velocity = Vector3.up * PickVelocity;
+                    dampping.velocity = Vector3.up * PickVelocity * -m_GravityDir;
                     dampping.Target = PickUpHolder;
                     holdingBlockObject = obj;
                     this.SetTimeout(() =>
