@@ -959,6 +959,14 @@ namespace SardineFish.Utils
             color.a = alpha;
             return color;
         }
+        
+        public static void DebugDrawRect(Rect rect, Color color, float z = 0)
+        {
+            Debug.DrawLine(new Vector3(rect.xMin, rect.yMin, z), new Vector3(rect.xMax, rect.yMin, z), color);
+            Debug.DrawLine(new Vector3(rect.xMin, rect.yMin, z), new Vector3(rect.xMin, rect.yMax, z), color);
+            Debug.DrawLine(new Vector3(rect.xMax, rect.yMax, z), new Vector3(rect.xMin, rect.yMax, z), color);
+            Debug.DrawLine(new Vector3(rect.xMax, rect.yMax, z), new Vector3(rect.xMax, rect.yMin, z), color);
+        }
 
         #endregion Misc
 
