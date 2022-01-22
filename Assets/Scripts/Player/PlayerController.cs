@@ -192,14 +192,15 @@ namespace Duality
                     _playableTracks.PlayOnTrack(0, m_Animations.JumpFall);
                     break;
                 case PlayerState.LiftUp:
-                    await _playableTracks.PlayOnTrackWait(0, m_Animations.LiftUp);
                     velocity = Vector2.zero;
+                    rawMovementInput = Vector2.zero;
+                    await _playableTracks.PlayOnTrackWait(0, m_Animations.LiftUp);
                     ChangeState(PlayerState.Idle);
                     break;
                 case PlayerState.PutDown:
+                    velocity = Vector2.zero;
+                    rawMovementInput = Vector2.zero;
                     await _playableTracks.PlayOnTrackWait(0, m_Animations.PutDown);
-                    velocity=Vector2.zero;
-                    
                     ChangeState(PlayerState.Idle);
                     break;
             }
@@ -261,6 +262,9 @@ namespace Duality
                         Destroy(holdingBlockObject);
                         Destroy(target);
                     }, PickTimeout);
+                    
+                    velocity = Vector2.zero;
+                    
                 }
                 else
                 {
@@ -278,6 +282,9 @@ namespace Duality
                         dampping.Target = null;
                         obj.transform.SetParent(PickUpHolder);
                     }, PickTimeout);
+                    
+                    velocity=Vector2.zero;
+                    
                 }
             }
         }
