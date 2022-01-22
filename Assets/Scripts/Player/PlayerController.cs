@@ -286,6 +286,7 @@ namespace Duality
                     
                     velocity=Vector2.zero;
                     
+                    GameManager.Instance.CheckForDiamond(selectedBlock);
                 }
             }
         }
