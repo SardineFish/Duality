@@ -74,6 +74,7 @@ namespace Duality
         [SerializeField] private Transform PickUpHolder;
         [SerializeField] private float PickTimeout;
         [SerializeField] private float PickVelocity = 10;
+        [SerializeField] private GameObject SelectionHighlight;
 
         [SerializeField] private PlayerAnimations m_Animations;
 
@@ -129,7 +130,7 @@ namespace Duality
             if (!renderer)
                 renderer = GetComponentInChildren<SpriteRenderer>();
             _playableTracks = GetComponent<PlayableTracks>();
-
+            SelectionHighlight.SetActive(false);
         }
 
         private void OnEnable()
@@ -208,6 +209,7 @@ namespace Duality
 
         private void UpdateAction()
         {
+            SelectionHighlight.SetActive(false);
             if(!onGround)
                 return;
             var mapPos = transform.position.ToVector2Int();
@@ -243,6 +245,9 @@ namespace Duality
             if (selected)
             {
                 Utility.DebugDrawRect(new Rect(selectedBlock, Vector2.one), Color.yellow);
+                SelectionHighlight.SetActive(true);
+                SelectionHighlight.transform.position =
+                    selectedBlock.ToVector3(SelectionHighlight.transform.position.z) + new Vector3(.5f, .5f, 0);
             }
 
             if (selected && Input.GetKeyDown(InputSettings.Action))
