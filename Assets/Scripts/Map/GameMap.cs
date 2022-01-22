@@ -5,12 +5,8 @@ using UnityEngine.Tilemaps;
 namespace Duality
 {
     [RequireComponent(typeof(Tilemap))]
-    public class GameMap : MonoBehaviour
+    public class GameMap : RuntimeSingleton<GameMap>
     {
-        [SerializeField]
-        private TileBase GroundBlock;
-        
-        public GameMap DualityMap;
         
         private Tilemap _tilemap;
         protected void Awake()
@@ -27,7 +23,7 @@ namespace Duality
         {
             var tile = GetTileAt(pos);
             _tilemap.SetTile(pos.ToVector3Int(), null);
-            DualityMap._tilemap.SetTile(pos.ToVector3Int(), DualityMap.GroundBlock);
+            // DualityMap._tilemap.SetTile(pos.ToVector3Int(), DualityMap.GroundBlock);
             return tile;
         }
 
@@ -35,7 +31,7 @@ namespace Duality
         {
             var tile = GetTileAt(pos);
             _tilemap.SetTile(pos.ToVector3Int(), newTile);
-            DualityMap._tilemap.SetTile(pos.ToVector3Int(), null);
+            // DualityMap._tilemap.SetTile(pos.ToVector3Int(), null);
             return tile;
         }
     }

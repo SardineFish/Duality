@@ -17,7 +17,6 @@ namespace Duality
     
     
     [RequireComponent(typeof(BoxCollider2D))]
-    [RequireComponent(typeof(SpriteRenderer))]
     public class PlayerController : MonoBehaviour
     {
         const float FIXED_DELTA_TIME = 0.02f;
@@ -46,8 +45,9 @@ namespace Duality
             Action = KeyCode.J
         };
 
-        [SerializeField]
-        private GameMap GameMap;
+        [SerializeField] private List<TileBase> m_ColliderTiles;
+        [SerializeField] private List<TileBase> m_MovableTiles;
+        [SerializeField] private TileBase m_AirTile;
 
 
         float gravity
@@ -95,6 +95,9 @@ namespace Duality
         {
             collider = GetComponent<BoxCollider2D>();
             renderer = GetComponent<SpriteRenderer>();
+            if (!renderer)
+                renderer = GetComponentInChildren<SpriteRenderer>();
+            
         }
 
         private void OnEnable()
@@ -145,12 +148,12 @@ namespace Duality
             }
             else
             {
-                if (IsColliderTile(mapPos + Vector2Int.right * facing))
+                if (IsMovableTile(mapPos + Vector2Int.right * facing))
                 {
                     selectedBlock = mapPos + Vector2Int.right * facing;
                     selected = true;
                 }
-                else if (IsColliderTile(mapPos + new Vector2Int(facing, m_GravityDir)))
+                else if (IsMovableTile(mapPos + new Vector2Int(facing, m_GravityDir)))
                 {
                     selectedBlock = mapPos + new Vector2Int(facing, m_GravityDir);
                     selected = true;
@@ -166,11 +169,12 @@ namespace Duality
             {
                 if (holdingTile)
                 {
-                    holdingTile = GameMap.SetTileAt(selectedBlock, holdingTile);
+                    holdingTile = GameMap.Instance.SetTileAt(selectedBlock, holdingTile);
+                    holdingTile = null;
                 }
                 else
                 {
-                    holdingTile = GameMap.RemoveTileAt(selectedBlock);
+                    holdingTile = GameMap.Instance.SetTileAt(selectedBlock, m_AirTile);
                 }
             }
         }
@@ -278,8 +282,12 @@ namespace Duality
 
 
         bool IsColliderTile(Vector2 pos)
-            => GameMap.GetTileAt(pos) as Tile is var tile && tile &&
-               tile.colliderType != Tile.ColliderType.None;
+            => GameMap.Instance.GetTileAt(pos) as TileBase is var tile && tile &&
+               m_ColliderTiles.Contains(tile);
+        
+        bool IsMovableTile(Vector2 pos)
+            => GameMap.Instance.GetTileAt(pos) as TileBase is var tile && tile &&
+               m_MovableTiles.Contains(tile);
 
         List<Rect> neighboorTiles = new List<Rect>();
 
