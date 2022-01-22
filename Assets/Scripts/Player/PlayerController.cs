@@ -14,10 +14,32 @@ namespace Duality
         public KeyCode Jump;
         public KeyCode Action;
     }
-    
-    
-    [RequireComponent(typeof(BoxCollider2D))]
-    public class PlayerController : MonoBehaviour
+
+    [Serializable]
+    struct PlayerAnimations
+    {
+        public AnimationClip Idle;
+        public AnimationClip JumpUP;
+        public AnimationClip JumpFall;
+        public AnimationClip Walk;
+        public AnimationClip LiftUp;
+        public AnimationClip LiftIdle;
+        public AnimationClip LiftWalk;
+        public AnimationClip PutDown;
+    }
+
+    enum PlayerState
+    {
+        Idle,
+        Move,
+        JumpUp,
+        JumpFall,
+        LiftUp,
+        PutDown,
+    }
+
+    [RequireComponent(typeof(BoxCollider2D), typeof(PlayableTracks))]
+    public class PlayerController : AnimationManagerBase
     {
         const float FIXED_DELTA_TIME = 0.02f;
         [SerializeField] private bool m_EnableControl = true;
@@ -49,6 +71,8 @@ namespace Duality
         [SerializeField] private List<TileBase> m_MovableTiles;
         [SerializeField] private TileBase m_AirTile;
 
+        [SerializeField] private PlayerAnimations m_Animations;
+
 
         float gravity
         {
@@ -76,8 +100,10 @@ namespace Duality
         bool onGround = false;
         new BoxCollider2D collider;
         new SpriteRenderer renderer;
+        private PlayableTracks _playableTracks;
         StateCache jumpCache = new StateCache(0.2f);
         StateCache onGroundCache = new StateCache(0.1f);
+        private PlayerState State = PlayerState.Idle;
 
         public bool EnableControl
         {
@@ -97,7 +123,8 @@ namespace Duality
             renderer = GetComponent<SpriteRenderer>();
             if (!renderer)
                 renderer = GetComponentInChildren<SpriteRenderer>();
-            
+            _playableTracks = GetComponent<PlayableTracks>();
+
         }
 
         private void OnEnable()
@@ -122,8 +149,52 @@ namespace Duality
         // Update is called once per frame
         void Update()
         {
-            UpdateMovement();
-            UpdateAction();
+            switch (State)
+            {
+                case PlayerState.Idle:
+                case PlayerState.Move:
+                case PlayerState.JumpUp: 
+                case PlayerState.JumpFall:
+                    UpdateMovement();
+                    UpdateAction();
+                    break;
+            }
+        }
+
+        private async void ChangeState(PlayerState nextState)
+        {
+            if (State == nextState)
+                return;
+            State = nextState;
+            switch (State)
+            {
+                case PlayerState.Idle:
+                    if (holdingTile)
+                        _playableTracks.PlayOnTrack(0, m_Animations.LiftIdle);
+                    else
+                        _playableTracks.PlayOnTrack(0, m_Animations.Idle);
+                    break;
+                case PlayerState.Move:
+                    if (holdingTile)
+                        _playableTracks.PlayOnTrack(0, m_Animations.LiftWalk);
+                    else
+                        _playableTracks.PlayOnTrack(0, m_Animations.Walk);
+                    break;
+                case PlayerState.JumpUp:
+                    _playableTracks.PlayOnTrack(0, m_Animations.JumpUP);
+                    break;
+                case PlayerState.JumpFall:
+                    _playableTracks.PlayOnTrack(0, m_Animations.JumpFall);
+                    break;
+                case PlayerState.LiftUp:
+                    await _playableTracks.PlayOnTrackWait(0, m_Animations.LiftUp);
+                    ChangeState(PlayerState.Idle);
+                    break;
+                case PlayerState.PutDown:
+                    await _playableTracks.PlayOnTrackWait(0, m_Animations.PutDown);
+                    ChangeState(PlayerState.Idle);
+                    break;
+            }
         }
 
         private void UpdateAction()
@@ -171,10 +242,12 @@ namespace Duality
                 {
                     holdingTile = GameMap.Instance.SetTileAt(selectedBlock, holdingTile);
                     holdingTile = null;
+                    ChangeState(PlayerState.PutDown);
                 }
                 else
                 {
                     holdingTile = GameMap.Instance.SetTileAt(selectedBlock, m_AirTile);
+                    ChangeState(PlayerState.LiftUp);
                 }
             }
         }
@@ -210,6 +283,18 @@ namespace Duality
                 renderer.flipX = false;
                 facing = 1;
             }
+
+            if (State == PlayerState.JumpUp || State == PlayerState.JumpFall)
+            {
+                if (onGround)
+                    ChangeState(PlayerState.Idle);
+            }
+            
+            if (State == PlayerState.Idle && rawMovementInput.x != 0)
+                ChangeState(PlayerState.Move);
+            if (State == PlayerState.Move && rawMovementInput.x == 0)
+                ChangeState(PlayerState.Idle);
+            
         }
         
 
@@ -224,6 +309,7 @@ namespace Duality
             if (onGroundCache)
             {
                 m_Velocity.y = jumpVelocity * -m_GravityDir;
+                ChangeState(PlayerState.JumpUp);
             }
 
             onGround = false;
@@ -368,6 +454,13 @@ namespace Duality
         private void OnApplicationFocus(bool focus)
         {
             focused = focus;
+        }
+
+        public override void GetAnimationClips(List<AnimationClip> results)
+        {
+            base.GetAnimationClips(results);
+            
+            GetAnimationClipMember(m_Animations, results);
         }
     }
 }

@@ -134,6 +134,8 @@ GameObject:
   - component: {fileID: 94063045}
   - component: {fileID: 94063044}
   - component: {fileID: 94063042}
+  - component: {fileID: 94063047}
+  - component: {fileID: 94063046}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -172,6 +174,13 @@ MonoBehaviour:
   m_MovableTiles:
   - {fileID: 11400000, guid: 907cf34a0911b4232a191549bdcb21a5, type: 2}
   m_AirTile: {fileID: 11400000, guid: d98f968fb4c164d2aa788045decb9ddb, type: 2}
+  m_Animations:
+    Idle: {fileID: 7400000, guid: a4d20b9c4dfa947baacd1cecc0fe988c, type: 2}
+    Jump: {fileID: 7400000, guid: 7222942a5dbf04abda45715dc56afb60, type: 2}
+    Walk: {fileID: 7400000, guid: eefd93aeb55b54100bca973c4cfe7a7b, type: 2}
+    LiftUp: {fileID: 7400000, guid: ba199730a6cb240d28b2af5636a004c7, type: 2}
+    LiftWalk: {fileID: 7400000, guid: bcc664d6af814420b843a1a2a190a0fb, type: 2}
+    PutDown: {fileID: 7400000, guid: 5366d27a5a27a4079ad93fbad1e70e29, type: 2}
 --- !u!61 &94063044
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -214,6 +223,43 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &94063046
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 94063041}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 547c9fd1a6e84b0da183d23efd25f077, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tracksCount: 1
+  playOnStart: 1
+  updateMode: 1
+  defaultConfig:
+    DestroyOnFinish: 0
+--- !u!95 &94063047
+Animator:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 94063041}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 0}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &461318058
 GameObject:
   m_ObjectHideFlags: 0
@@ -826,7 +872,7 @@ Tilemap:
     second:
       serializedVersion: 2
       m_TileIndex: 2
-      m_TileSpriteIndex: 15
+      m_TileSpriteIndex: 19
       m_TileMatrixIndex: 0
       m_TileColorIndex: 1
       m_TileObjectToInstantiateIndex: 65535
@@ -2266,7 +2312,7 @@ Tilemap:
     second:
       serializedVersion: 2
       m_TileIndex: 1
-      m_TileSpriteIndex: 19
+      m_TileSpriteIndex: 25
       m_TileMatrixIndex: 0
       m_TileColorIndex: 1
       m_TileObjectToInstantiateIndex: 65535
@@ -3720,6 +3766,12 @@ Tilemap:
     m_Data: {fileID: 11400000, guid: d98f968fb4c164d2aa788045decb9ddb, type: 2}
   - m_RefCount: 144
     m_Data: {fileID: 11400000, guid: 907cf34a0911b4232a191549bdcb21a5, type: 2}
+  - m_RefCount: 0
+    m_Data: {fileID: 0}
+  - m_RefCount: 0
+    m_Data: {fileID: 0}
+  - m_RefCount: 0
+    m_Data: {fileID: 0}
   m_TileSpriteArray:
   - m_RefCount: 88
     m_Data: {fileID: 706665183, guid: 37c05e006881f48dfa7b49f532d0dc35, type: 3}
@@ -3751,8 +3803,8 @@ Tilemap:
     m_Data: {fileID: 0}
   - m_RefCount: 0
     m_Data: {fileID: 0}
-  - m_RefCount: 1
-    m_Data: {fileID: 1241602959, guid: d81615bbc8aa34848b2a95599e0e5595, type: 3}
+  - m_RefCount: 0
+    m_Data: {fileID: 0}
   - m_RefCount: 1
     m_Data: {fileID: -773157724, guid: 37c05e006881f48dfa7b49f532d0dc35, type: 3}
   - m_RefCount: 1
@@ -3760,7 +3812,7 @@ Tilemap:
   - m_RefCount: 1
     m_Data: {fileID: 800396115, guid: 3163ecab384c745dea36c5ef32c6a991, type: 3}
   - m_RefCount: 1
-    m_Data: {fileID: 856950897, guid: 92fb3ec646460498cb3e7c29d3c4e0d3, type: 3}
+    m_Data: {fileID: 1241602959, guid: d81615bbc8aa34848b2a95599e0e5595, type: 3}
   - m_RefCount: 4
     m_Data: {fileID: -365748099, guid: d81615bbc8aa34848b2a95599e0e5595, type: 3}
   - m_RefCount: 1
@@ -3771,6 +3823,8 @@ Tilemap:
     m_Data: {fileID: 2018627844, guid: 37c05e006881f48dfa7b49f532d0dc35, type: 3}
   - m_RefCount: 1
     m_Data: {fileID: -1032912683, guid: 37c05e006881f48dfa7b49f532d0dc35, type: 3}
+  - m_RefCount: 1
+    m_Data: {fileID: 856950897, guid: 92fb3ec646460498cb3e7c29d3c4e0d3, type: 3}
   m_TileMatrixArray:
   - m_RefCount: 232
     m_Data:
@@ -4006,6 +4060,13 @@ MonoBehaviour:
   m_MovableTiles:
   - {fileID: 11400000, guid: d98f968fb4c164d2aa788045decb9ddb, type: 2}
   m_AirTile: {fileID: 11400000, guid: 907cf34a0911b4232a191549bdcb21a5, type: 2}
+  m_Animations:
+    Idle: {fileID: 0}
+    Jump: {fileID: 0}
+    Walk: {fileID: 0}
+    LiftUp: {fileID: 0}
+    LiftWalk: {fileID: 0}
+    PutDown: {fileID: 0}
 --- !u!61 &1711694820
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -4121,8 +4182,8 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: b600e7ec2e52f5b44b9e0a7cdbc1911e, type: 3}
-  m_Color: {r: 0.32645065, g: 0.7319167, b: 0.7924528, a: 1}
+  m_Sprite: {fileID: 1553408447, guid: 5685c9f4b4c42499bb4455039eb8f8bd, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
