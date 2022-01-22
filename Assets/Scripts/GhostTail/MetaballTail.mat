@@ -37,14 +37,17 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _EdgeStrength: 0.636
     - _EnableExternalAlpha: 0
+    - _ShadowStrength: 0.75
+    - _ShadowThreshold: 0.386
     - _k: 0.05
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _Flip: {r: 1, g: 1, b: 1, a: 1}
-    - _P1: {r: 8.63, g: 0, b: 0, a: 4.4}
-    - _P2: {r: -19.9, g: 0, b: 0, a: 3.2}
-    - _P3: {r: 0, g: 10, b: 0, a: 2.5}
-    - _P4: {r: 0, g: -8.56, b: 0, a: 1.49}
+    - _P1: {r: 963.12036, g: 434.3292, b: 0.47168562, a: 7.0262156}
+    - _P2: {r: 981.1844, g: 445.62485, b: 0.41358852, a: 9.381172}
+    - _P3: {r: 966.88605, g: 437.8025, b: 0.36179775, a: 19.962807}
+    - _P4: {r: 967.9375, g: 429.8221, b: 0.29246247, a: 14.03333}
     - _RendererColor: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []

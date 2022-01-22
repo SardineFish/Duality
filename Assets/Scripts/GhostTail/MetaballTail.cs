@@ -20,7 +20,6 @@ namespace Ghost
         public float maxInitialSize = 40;
         public float maxInitialVel = 1;
         public float maxLifetime = 3;
-        public float shadowThreshold = 0.4f;
         private float emitCountdown;
         void Awake()
         {
@@ -92,7 +91,6 @@ namespace Ghost
                 material.SetVector("_P" + i, blobs[i]);
             }
             material.SetInt("_NumPoints", Mathf.Min(blobs.Count, 16));
-            material.SetFloat("_ShadowThreshold", shadowThreshold);
         }
     }
 }

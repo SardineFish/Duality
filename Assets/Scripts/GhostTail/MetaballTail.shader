@@ -3,11 +3,10 @@ Shader "Unlit/MetaballTail"
     Properties
     {
         _MainTex ("Texture", 2D) = "white" {}
-        _P1 ("P1", Vector) = (0, 0, 0, 0)
-        _P2 ("P2", Vector) = (0, 0, 0, 0)
-        _P3 ("P3", Vector) = (0, 0, 0, 0)
-        _P4 ("P4", Vector) = (0, 0, 0, 0)
-        _k ("Constant K", Range(0.0, 1)) = 0.4
+        _k ("Constant K", Range(0.0, 0.1)) = 0.04
+        _ShadowThreshold ("Shadow Threshold", Range(0, 1)) = 0.45
+        _ShadowStrength ("Shadow Strength", Range(0, 1)) = 0.75
+        _EdgeStrength ("Edge Strength", Range(0, 1)) = 0.6
     }
     SubShader
     {
@@ -59,6 +58,8 @@ Shader "Unlit/MetaballTail"
             float4 _P14;
             float4 _P15;
             float _ShadowThreshold;
+            float _ShadowStrength;
+            float _EdgeStrength;
             
             int _NumPoints;
             float _k;
@@ -122,6 +123,11 @@ Shader "Unlit/MetaballTail"
                 xyCentered = xyCentered / 4 * 4;
                 float ccl = circles(xyCentered);
                 if (ccl > 0) clip(-1);
+                if (ccl > -4)
+                {
+                    col.rgb = _EdgeStrength;
+                    return col;
+                }
                 
                 float2 norm = circlesNormal(xyCentered);
 
@@ -130,7 +136,7 @@ Shader "Unlit/MetaballTail"
 
                 if (dot(norm3, normalize(float3(0.2, -1, 0))) > _ShadowThreshold)
                 {
-                    col.rgb *= 0.5;
+                    col.rgb *= _ShadowStrength;
                 }
                 
                 // apply fog
