@@ -176,7 +176,7 @@ MonoBehaviour:
   m_AirTile: {fileID: 11400000, guid: d98f968fb4c164d2aa788045decb9ddb, type: 2}
   PickPrefab: {fileID: 5460325793067657780, guid: 3ac810883726d4d159dc765dd8a76941, type: 3}
   PickUpHolder: {fileID: 1335442997}
-  PickTimeout: 1
+  PickTimeout: 0.3
   PickVelocity: 10
   m_Animations:
     Idle: {fileID: 7400000, guid: a4d20b9c4dfa947baacd1cecc0fe988c, type: 2}
