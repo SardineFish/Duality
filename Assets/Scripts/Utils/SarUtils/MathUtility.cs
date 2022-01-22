@@ -26,6 +26,16 @@ namespace SardineFish.Utils
             return new Vector3(v.x, 0, v.y);
         }
 
+        public static Vector4 ToVec4(this Quaternion q)
+        {
+            return new Vector4(q.x, q.y, q.z, q.w);
+        }
+
+        public static Quaternion ToQuat(this Vector4 q)
+        {
+            return new Quaternion(q.x, q.y, q.z, q.w);
+        }
+
         public static Rect Scale(this Rect rect, Vector2 rate)
         {
             return new Rect()
