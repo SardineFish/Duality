@@ -33,14 +33,14 @@ namespace Editor
 
             if (GUILayout.Button("Generate"))
             {
-                foreach (var obj in Selection.GetFiltered(typeof (Sprite), SelectionMode.Assets))
+                foreach (var obj in Selection.GetFiltered<Sprite>(SelectionMode.Unfiltered))
                 {
                     var sprite = obj as Sprite;
 
                     var tile = CreateInstance<GameTile>();
                     tile.sprite = sprite;
                     tile.Type = _tileType;
-                    var filename = Path.Join(outputFolder, $"Tile_{_tileType}_{sprite.name}");
+                    var filename = Path.Join(outputFolder, $"Tile_{_tileType}_{sprite.name}.asset");
                     AssetDatabase.CreateAsset(tile, filename);
                     Debug.Log($"Saved to {filename}");
                 }
