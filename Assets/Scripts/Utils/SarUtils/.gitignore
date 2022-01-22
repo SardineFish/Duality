@@ -71,4 +71,4 @@ crashlytics-build.properties
 /[Aa]ssets/[Ss]treamingAssets/aa/*
 
 # All meta file should be ignore since this project should not depend on any unity version.
-*.meta
+# *.meta
