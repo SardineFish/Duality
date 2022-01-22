@@ -5,14 +5,16 @@ using UnityEngine.Tilemaps;
 namespace Duality
 {
     [RequireComponent(typeof(Tilemap))]
-    public class GameMap : RuntimeSingleton<GameMap>
+    public class GameMap : MonoBehaviour
     {
+        [SerializeField]
+        private TileBase GroundBlock;
+        
+        public GameMap DualityMap;
+        
         private Tilemap _tilemap;
-        protected override void Awake()
+        protected void Awake()
         {
-            base.Awake();
-
-
             _tilemap = GetComponent<Tilemap>();
         }
 
@@ -25,6 +27,7 @@ namespace Duality
         {
             var tile = GetTileAt(pos);
             _tilemap.SetTile(pos.ToVector3Int(), null);
+            DualityMap._tilemap.SetTile(pos.ToVector3Int(), DualityMap.GroundBlock);
             return tile;
         }
 
@@ -32,6 +35,7 @@ namespace Duality
         {
             var tile = GetTileAt(pos);
             _tilemap.SetTile(pos.ToVector3Int(), newTile);
+            DualityMap._tilemap.SetTile(pos.ToVector3Int(), null);
             return tile;
         }
     }

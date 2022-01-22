@@ -1,10 +1,21 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.Tilemaps;
 using System.Collections.Generic;
 using SardineFish.Utils;
 
 namespace Duality
 {
+    [Serializable]
+    struct PlayerInputSettings
+    {
+        public KeyCode MoveLeft;
+        public KeyCode MoveRight;
+        public KeyCode Jump;
+        public KeyCode Action;
+    }
+    
+    
     [RequireComponent(typeof(BoxCollider2D))]
     [RequireComponent(typeof(SpriteRenderer))]
     public class PlayerController : MonoBehaviour
@@ -17,6 +28,9 @@ namespace Duality
         [SerializeField] [Delayed] private float m_JumpHeight = 3;
         [SerializeField] [Delayed] private float m_JumpTime = 0.5f;
 
+        [SerializeField]
+        private int m_GravityDir = -1;
+
         [SerializeField] private float m_FallGravityScale = 1;
 
         [SerializeField] private float m_JumpCacheTime = 0.2f;
@@ -24,7 +38,16 @@ namespace Duality
         [SerializeField] private float m_WolfTime = 0.1f;
 
         [SerializeField]
-        private KeyCode ActionKey = KeyCode.J;
+        private PlayerInputSettings InputSettings = new PlayerInputSettings()
+        {
+            MoveLeft = KeyCode.A,
+            MoveRight = KeyCode.D,
+            Jump = KeyCode.Space,
+            Action = KeyCode.J
+        };
+
+        [SerializeField]
+        private GameMap GameMap;
 
 
         float gravity
@@ -109,9 +132,9 @@ namespace Duality
             var selected = false;
             if (holdingTile)
             {
-                if (!IsColliderTile(mapPos + new Vector2Int(facing, -1)))
+                if (!IsColliderTile(mapPos + new Vector2Int(facing, m_GravityDir)))
                 {
-                    selectedBlock = mapPos + new Vector2Int(facing, -1);
+                    selectedBlock = mapPos + new Vector2Int(facing, m_GravityDir);
                     selected = true;
                 }
                 else if (!IsColliderTile(mapPos + Vector2Int.right * facing))
@@ -127,9 +150,9 @@ namespace Duality
                     selectedBlock = mapPos + Vector2Int.right * facing;
                     selected = true;
                 }
-                else if (IsColliderTile(mapPos + new Vector2Int(facing, -1)))
+                else if (IsColliderTile(mapPos + new Vector2Int(facing, m_GravityDir)))
                 {
-                    selectedBlock = mapPos + new Vector2Int(facing, -1);
+                    selectedBlock = mapPos + new Vector2Int(facing, m_GravityDir);
                     selected = true;
                 }
             }
@@ -139,15 +162,15 @@ namespace Duality
                 Utility.DebugDrawRect(new Rect(selectedBlock, Vector2.one), Color.yellow);
             }
 
-            if (selected && Input.GetKeyDown(ActionKey))
+            if (selected && Input.GetKeyDown(InputSettings.Action))
             {
                 if (holdingTile)
                 {
-                    holdingTile = GameMap.Instance.SetTileAt(selectedBlock, holdingTile);
+                    holdingTile = GameMap.SetTileAt(selectedBlock, holdingTile);
                 }
                 else
                 {
-                    holdingTile = GameMap.Instance.RemoveTileAt(selectedBlock);
+                    holdingTile = GameMap.RemoveTileAt(selectedBlock);
                 }
             }
         }
@@ -155,22 +178,17 @@ namespace Duality
         private void UpdateMovement()
         {
             var movement = new Vector2();
-            if (Input.GetKey(KeyCode.A))
+            if (Input.GetKey(InputSettings.MoveLeft))
                 movement += Vector2.left;
-            if (Input.GetKey(KeyCode.D))
+            if (Input.GetKey(InputSettings.MoveRight))
                 movement += Vector2.right;
-            if (Input.GetKey(KeyCode.W))
-                movement += Vector2.up;
-            if (Input.GetKey(KeyCode.S))
-                movement += Vector2.down;
-            if (Input.GetKey(KeyCode.Space))
+            if (Input.GetKey(InputSettings.Jump))
                 jumpCache.Renew(Time.time);
-            if (Input.GetKey(KeyCode.LeftShift) && Input.GetKeyDown(KeyCode.Space))
+            if (Input.GetKey(KeyCode.LeftShift) && Input.GetKeyDown(InputSettings.Jump))
             {
                 onGroundCache.Renew(Time.time);
                 jumpCache.Renew(Time.time);
             }
-            Debug.Log(movement);
 
             rawMovementInput = movement;
             jumpCache.CacheTime = m_JumpCacheTime;
@@ -201,7 +219,7 @@ namespace Duality
         {
             if (onGroundCache)
             {
-                m_Velocity.y = jumpVelocity;
+                m_Velocity.y = jumpVelocity * -m_GravityDir;
             }
 
             onGround = false;
@@ -223,9 +241,9 @@ namespace Duality
                 velocity.y
             );
 
-            var g = Vector2.down * gravity;
-            if (velocity.y < 0)
-                g = Vector2.down * gravity * m_FallGravityScale;
+            var g = Vector2.up * m_GravityDir * gravity;
+            if (MathUtility.SignInt(velocity.y)  == m_GravityDir)
+                g = Vector2.up * gravity * m_GravityDir * m_FallGravityScale;
 
             velocity += g * Time.fixedDeltaTime;
 
@@ -235,11 +253,16 @@ namespace Duality
             if (CollisionCheck(Time.fixedDeltaTime, velocity, Vector2.down, Vector2.left, out distance))
             {
                 motionStep.y = MathUtility.MinAbs(motionStep.y, velocity.normalized.y * distance);
-                Land();
+                if (m_GravityDir < 0)
+                    Land();
             }
 
             if (CollisionCheck(Time.fixedDeltaTime, velocity, Vector2.up, Vector2.left, out distance))
+            {
                 motionStep.y = MathUtility.MinAbs(motionStep.y, velocity.normalized.y * distance);
+                if (m_GravityDir > 0)
+                    Land();
+            }
             if (CollisionCheck(Time.fixedDeltaTime, velocity, Vector2.left, Vector2.up, out distance))
                 motionStep.x = MathUtility.MinAbs(motionStep.x, velocity.normalized.x * distance);
             if (CollisionCheck(Time.fixedDeltaTime, velocity, Vector2.right, Vector2.up, out distance))
@@ -255,7 +278,7 @@ namespace Duality
 
 
         bool IsColliderTile(Vector2 pos)
-            => GameMap.Instance.GetTileAt(pos) as Tile is var tile && tile &&
+            => GameMap.GetTileAt(pos) as Tile is var tile && tile &&
                tile.colliderType != Tile.ColliderType.None;
 
         List<Rect> neighboorTiles = new List<Rect>();
