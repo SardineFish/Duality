@@ -258,8 +258,8 @@ namespace Duality
                     this.SetTimeout(() =>
                     {
                         holdingTile = GameMap.Instance.SetTileAt(selectedBlock, holdingTile);
-                        ChangeState(PlayerState.Idle);
                         holdingTile = null;
+                        ChangeState(PlayerState.Idle);
                         Destroy(holdingBlockObject);
                         Destroy(target);
                     }, PickTimeout);
@@ -282,10 +282,12 @@ namespace Duality
                     {
                         dampping.Target = null;
                         obj.transform.SetParent(PickUpHolder);
+                        ChangeState(PlayerState.Idle);
                     }, PickTimeout);
                     
                     velocity=Vector2.zero;
                     
+                    GameManager.Instance.CheckForDiamond(selectedBlock);
                 }
             }
         }
