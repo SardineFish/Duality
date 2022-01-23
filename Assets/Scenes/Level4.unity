@@ -266,11 +266,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7069808273600006706, guid: 22014f33011f140a0a54efb413293dff, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.39
+      value: -0.53
       objectReference: {fileID: 0}
     - target: {fileID: 7069808273600006706, guid: 22014f33011f140a0a54efb413293dff, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.79
+      value: -0.76
       objectReference: {fileID: 0}
     - target: {fileID: 7069808273600006706, guid: 22014f33011f140a0a54efb413293dff, type: 3}
       propertyPath: m_LocalPosition.z
@@ -309,8 +309,16 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 519420031}
     - target: {fileID: 7069808273600006707, guid: 22014f33011f140a0a54efb413293dff, type: 3}
+      propertyPath: maxLifetime
+      value: 0.64
+      objectReference: {fileID: 0}
+    - target: {fileID: 7069808273600006707, guid: 22014f33011f140a0a54efb413293dff, type: 3}
       propertyPath: emitInterval
-      value: -4.5
+      value: -9.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 7069808273600006707, guid: 22014f33011f140a0a54efb413293dff, type: 3}
+      propertyPath: maxInitialVel
+      value: 62.39
       objectReference: {fileID: 0}
     - target: {fileID: 7069808273600006707, guid: 22014f33011f140a0a54efb413293dff, type: 3}
       propertyPath: maxInitialSize
