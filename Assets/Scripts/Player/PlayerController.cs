@@ -37,6 +37,7 @@ namespace Duality
         JumpFall,
         LiftUp,
         PutDown,
+        Dead,
     }
 
     [RequireComponent(typeof(BoxCollider2D), typeof(PlayableTracks))]
