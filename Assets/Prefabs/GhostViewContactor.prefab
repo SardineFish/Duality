@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1728831482752401301}
   - component: {fileID: 1728831482752401306}
-  m_Layer: 6
+  m_Layer: 3
   m_Name: GhostViewContactor
   m_TagString: Player
   m_Icon: {fileID: 0}
