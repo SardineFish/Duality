@@ -155,9 +155,9 @@ MonoBehaviour:
   m_occlusionLayer:
     serializedVersion: 2
     m_Bits: 64
-  m_viewAngle: 0
-  m_detectRayNum: 0
-  m_detectLength: 0
+  m_viewAngle: 60
+  m_detectRayNum: 8
+  m_detectLength: 3
 --- !u!1 &7069808273600006705
 GameObject:
   m_ObjectHideFlags: 0
@@ -209,8 +209,9 @@ MonoBehaviour:
   anim: {fileID: 3554152771525388211}
   questionMarkAnim: {fileID: 223443832599242785}
   eyesTransform: {fileID: 4440683779106692538}
-  playerDetector: {fileID: 980553707673889499}
   emitInterval: 0.05
+  emitIntervalJitter: 0.1
+  emitIntervalJitterSpeed: 1
   maxInitialSize: 40
   maxInitialVel: 1
   maxLifetime: 0.6

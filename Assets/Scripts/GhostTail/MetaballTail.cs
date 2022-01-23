@@ -143,10 +143,19 @@ namespace Ghost
                 var playerDetector = GetComponentInChildren < GhostViewDetector>();
                 if (playerDetector)
                 {
+                    #if false
                     float t = (transform.position - lastStopTransform.position).magnitude /
                               (stops[curStopIndex].transform.position - lastStopTransform.position).magnitude;
                     playerDetector.transform.rotation = Quaternion.Slerp(lastStopTransform.rotation,
                         stops[curStopIndex].transform.rotation, t);
+                    #elif false
+                    playerDetector.transform.rotation = stops[curStopIndex].transform.rotation;
+                    #else
+                    Vector3 lookDir = (stops[curStopIndex].transform.position - lastStopTransform.transform.position)
+                        .normalized;
+                    playerDetector.transform.rotation =
+                        Quaternion.LookRotation(Vector3.forward, Vector3.Cross(lookDir, Vector3.back));
+                    #endif
                 }
             }
         }
@@ -197,6 +206,27 @@ namespace Ghost
         {
             if (Application.isPlaying && !isFire)
             {
+                var playerDetector = GetComponentInChildren < GhostViewDetector>();
+                if (curState != GhostState.Attack && playerDetector)
+                {
+                    var player = playerDetector.PlayerInView();
+                    if (player)
+                    {
+                        hitPlayerTransform = player;
+                        if (curState == GhostState.Relaxed)
+                        {
+                            TransitionState(GhostState.Alert);
+                        }
+                    }
+                    else
+                    {
+                        if (curState == GhostState.Alert)
+                        {
+                            TransitionState(GhostState.Relaxed);
+                        }
+                    }
+                }
+                
                 if (curState == GhostState.Relaxed)
                 {
                     MoveGhost();
@@ -219,26 +249,6 @@ namespace Ghost
                         Vector3.Lerp(attackStartPos, hitPlayerTransform.position, timeSinceAttackStart / attackDuration);
                 }
 
-                var playerDetector = GetComponentInChildren < GhostViewDetector>();
-                if (curState != GhostState.Attack && playerDetector)
-                {
-                    var player = playerDetector.PlayerInView();
-                    if (player)
-                    {
-                        hitPlayerTransform = player;
-                        if (curState == GhostState.Relaxed)
-                        {
-                            TransitionState(GhostState.Alert);
-                        }
-                    }
-                    else
-                    {
-                        if (curState == GhostState.Alert)
-                        {
-                            TransitionState(GhostState.Relaxed);
-                        }
-                    }
-                }
             }
             
             //======== render ========
