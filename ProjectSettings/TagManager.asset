@@ -14,9 +14,9 @@ TagManager:
   - GhostView
   - CameraLeft
   - CameraRight
-  - 
-  - 
-  - 
+  - Diamond
+  - DiamondPicker
+  - ColliderWhite
   - 
   - 
   - 

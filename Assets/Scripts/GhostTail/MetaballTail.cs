@@ -7,6 +7,13 @@ using Random = UnityEngine.Random;
 
 namespace Ghost
 {
+    public enum GhostState
+    {
+        Relaxed,
+        Alert,
+        Attack
+    }
+    
     [ExecuteInEditMode]
     public class MetaballTail : MonoBehaviour
     {
@@ -17,6 +24,7 @@ namespace Ghost
         private List<Vector3> blobVel;
 
         public Animator anim;
+        public Animator questionMarkAnim;
         public Transform eyesTransform;
 
         public float emitInterval = 0.5f;
@@ -24,11 +32,35 @@ namespace Ghost
         public float maxInitialVel = 1;
         public float maxLifetime = 3;
         public float eyesFollowCoeff = 20;
+        public float shadowThreshold = 0.386f;
         public Color color = Color.white;
+        public Color ShadowColor = Color.gray;
+        public Color EdgeColor = Color.black;
+        public float EdgeWidth = 4;
         public Vector2 wind = Vector2.zero;
         private float emitCountdown;
         private float maxVel;
         private Vector3 cachedEyePosition;
+
+        [Space(10)]
+        public Transform stopsObj;
+
+        public int curStopIndex = 0;
+
+        public float moveSpeed = 1;
+
+        public GhostState curState = GhostState.Relaxed;
+        
+        [Space(10)]
+        public float alertDuration = 1;
+        public float curAlertAmount = 0;
+        public float alertRestoreRate = 0.5f;
+
+        [Space(10)]
+        private float timeSinceAttackStart = 0;
+        private Vector3 attackStartPos;
+        public float attackDuration = 0.25f;
+        
         void Awake()
         {
             // props: xy:=position; w:=radius
@@ -38,6 +70,8 @@ namespace Ghost
             maxVel = maxInitialVel;
             matInstance = Instantiate<Material>(material);
             GetComponent<SpriteRenderer>().material = matInstance;
+
+            Reset();
         }
 
         private void OnEnable()
@@ -46,7 +80,6 @@ namespace Ghost
             blobs = new List<Vector4>();
             blobVel = new List<Vector3>();
             cachedEyePosition = eyesTransform.position;
-            CloseEyes();
         }
 
         public void OpenEyes()
@@ -61,8 +94,112 @@ namespace Ghost
             maxVel = maxInitialVel * 0.4f;
         }
 
+        void MoveGhost()
+        {
+            if (!stopsObj) return;
+            var stops = stopsObj.gameObject.GetComponentsInChildren<GhostStop>();
+            if (stops.Length == 0) return;
+            if (stops[curStopIndex].timeTilDepart > 0 && (stops[curStopIndex].transform.position - transform.position).magnitude < 0.01f)
+            {
+                stops[curStopIndex].timeTilDepart -= Time.deltaTime;
+            }
+            else
+            {
+                if (stops[curStopIndex].timeTilDepart < 0) // hasn't transitioned yet. do it now
+                {
+                    stops[curStopIndex].timeTilDepart = stops[curStopIndex].stopDuration;
+                    curStopIndex += 1;
+                    if (curStopIndex >= stops.Length)
+                    {
+                        curStopIndex = 0;
+                    }
+                }
+                
+                // move
+                // vec to destination
+                var posDelta = stops[curStopIndex].transform.position - transform.position;//stops[prevStopIndex].transform.position;
+                var maxStep = moveSpeed * Time.deltaTime;
+                
+                if (posDelta.magnitude > maxStep)
+                {
+                    transform.position += posDelta.normalized * maxStep;
+                }
+                else // arrived at stop.
+                {
+                    transform.position = stops[curStopIndex].transform.position;
+                }
+            }
+        }
+
+        void TransitionState(GhostState newState)
+        {
+            if (newState == GhostState.Relaxed)
+            {
+                curState = newState;
+            }
+            else if (newState == GhostState.Alert)
+            {
+                curState = newState;
+                curAlertAmount = 0;
+                if (questionMarkAnim) questionMarkAnim.SetTrigger("Show");
+            }
+            else if (newState == GhostState.Attack)
+            {
+                curState = newState;
+                timeSinceAttackStart = 0;
+                attackStartPos = transform.position;
+            }
+
+            if (newState != GhostState.Alert)
+            {
+                curAlertAmount = 0;
+                if (questionMarkAnim)
+                {
+                    questionMarkAnim.SetTrigger("Hide");
+                }
+            }
+        }
+
+        void Reset()
+        {
+            OpenEyes();
+            if (!stopsObj) return;
+            var stops = stopsObj.gameObject.GetComponentsInChildren<GhostStop>();
+            if (stops.Length > 0)
+            {
+                transform.position = stops[0].transform.position;
+            }
+            TransitionState(GhostState.Relaxed);
+        }
+
         void Update()
         {
+            if (Application.isPlaying)
+            {
+                if (curState == GhostState.Relaxed)
+                {
+                    MoveGhost();
+                    curAlertAmount = Mathf.Max(0, curAlertAmount - Time.deltaTime * alertRestoreRate);
+                }
+                else if (curState == GhostState.Alert)
+                {
+                    curAlertAmount += Time.deltaTime;
+                    if (curAlertAmount >= alertDuration)
+                    {
+                        TransitionState(GhostState.Attack);
+                    }
+                }
+                else if (curState == GhostState.Attack)
+                {
+                    timeSinceAttackStart += Time.deltaTime;
+                    if (timeSinceAttackStart > attackDuration) timeSinceAttackStart = attackDuration;
+                    transform.position =
+                        Vector3.Lerp(attackStartPos, new Vector3(), timeSinceAttackStart / attackDuration);
+                }
+            }
+            
+            //======== render ========
+            
             if (!matInstance) return;
             if (!anim) return;
             if (!eyesTransform) return;
@@ -122,6 +259,10 @@ namespace Ghost
             }
             matInstance.SetInt("_NumPoints", Mathf.Min(blobs.Count, 16));
             matInstance.SetColor("_Color", color);
+            matInstance.SetColor("_EdgeColor", EdgeColor);
+            matInstance.SetColor("_ShadowColor", ShadowColor);
+            matInstance.SetFloat("_EdgeWidth", EdgeWidth);
+            matInstance.SetFloat("_ShadowThreshold", shadowThreshold);
 
             cachedEyePosition = eyesTransform.position;
             
@@ -134,6 +275,17 @@ namespace Ghost
             if (Input.GetKeyDown(KeyCode.U))
             {
                 CloseEyes();
+            }
+
+            if (Input.GetKeyDown(KeyCode.I))
+            {
+                TransitionState(GhostState.Alert);
+            }
+
+            if (Input.GetKeyDown(KeyCode.O))
+            {
+                Debug.Log("reset");
+                Reset();
             }
         }
     }
