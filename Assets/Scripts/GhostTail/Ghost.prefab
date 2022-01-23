@@ -210,7 +210,7 @@ MonoBehaviour:
   questionMarkAnim: {fileID: 223443832599242785}
   eyesTransform: {fileID: 4440683779106692538}
   emitInterval: 0.05
-  emitIntervalJitter: 0.1
+  emitIntervalJitter: 0
   emitIntervalJitterSpeed: 1
   maxInitialSize: 40
   maxInitialVel: 1
