@@ -24,7 +24,11 @@ namespace Ghost
         public float maxInitialVel = 1;
         public float maxLifetime = 3;
         public float eyesFollowCoeff = 20;
+        public float shadowThreshold = 0.386f;
         public Color color = Color.white;
+        public Color ShadowColor = Color.gray;
+        public Color EdgeColor = Color.black;
+        public float EdgeWidth = 4;
         public Vector2 wind = Vector2.zero;
         private float emitCountdown;
         private float maxVel;
@@ -122,6 +126,10 @@ namespace Ghost
             }
             matInstance.SetInt("_NumPoints", Mathf.Min(blobs.Count, 16));
             matInstance.SetColor("_Color", color);
+            matInstance.SetColor("_EdgeColor", EdgeColor);
+            matInstance.SetColor("_ShadowColor", ShadowColor);
+            matInstance.SetFloat("_EdgeWidth", EdgeWidth);
+            matInstance.SetFloat("_ShadowThreshold", shadowThreshold);
 
             cachedEyePosition = eyesTransform.position;
             
