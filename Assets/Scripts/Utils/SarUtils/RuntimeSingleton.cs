@@ -23,14 +23,16 @@ namespace SardineFish.Utils
 
         protected virtual void Awake()
         {
-            if (instance && instance != this)
-            {
-                // Destroy(gameObject);
-            }
-            else
             {
                 if (m_DontDestroyOnLoad)
+                {
+                    if (instance && instance != this)
+                    {
+                        Destroy(gameObject);
+                        return;
+                    }
                     DontDestroyOnLoad(gameObject);
+                }
                 if (gameObject.activeInHierarchy)
                 {
                     Debug.Log($"singleton {name} initialized");

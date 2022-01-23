@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using DefaultNamespace;
 using Duality;
 using SardineFish.Utils;
 using UnityEngine;
@@ -8,6 +9,7 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : RuntimeSingleton<GameManager>
 {
+    [SerializeField] private string m_currentScene;
     [SerializeField] private string m_nextScene;
     [SerializeField] private Vector2Int m_stageDiamondPos;
     [SerializeField] private Vector2Int m_DiamondSpawnPos;
@@ -36,10 +38,17 @@ public class GameManager : RuntimeSingleton<GameManager>
         if(levelLoading)
             return;
         
-        Debug.Log("TODO: Load Next Level");
-        levelLoading = true;
+        // Debug.Log("TODO: Load Next Level");
+        // levelLoading = true;
+        //
+        // StartCoroutine(LoadLevel(SceneManager.GetActiveScene().buildIndex + 1));
+        
+        CutScene.Instance.ChangeScene(m_nextScene);
+    }
 
-        StartCoroutine(LoadLevel(SceneManager.GetActiveScene().buildIndex + 1));
+    public void ResetLevel()
+    {
+        CutScene.Instance.ChangeScene(m_currentScene);
     }
 
     public void ReloadCurrentLevel()
