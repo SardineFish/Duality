@@ -301,6 +301,8 @@ namespace Duality
 
         public void Kill()
         {
+            ChangeState(PlayerState.Dead);
+            GameManager.Instance.ResetLevel();
             
         }
 
