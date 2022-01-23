@@ -404,7 +404,7 @@ namespace Duality
                 motionStep.x = MathUtility.MinAbs(motionStep.x, velocity.normalized.x * distance);
 
             velocity = motionStep / Time.fixedDeltaTime;
-            Debug.Log(motionStep);
+            // Debug.Log(motionStep);
 
             transform.position += motionStep.ToVector3();
         }
