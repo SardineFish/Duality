@@ -7,6 +7,13 @@ using Random = UnityEngine.Random;
 
 namespace Ghost
 {
+    public enum GhostState
+    {
+        Relaxed,
+        Alert,
+        Attack
+    }
+    
     [ExecuteInEditMode]
     public class MetaballTail : MonoBehaviour
     {
@@ -40,6 +47,18 @@ namespace Ghost
         public int curStopIndex = 0;
 
         public float moveSpeed = 1;
+
+        public GhostState curState = GhostState.Relaxed;
+        
+        [Space(10)]
+        public float alertDuration = 1;
+        public float curAlertAmount = 0;
+        public float alertRestoreRate = 0.5f;
+
+        [Space(10)]
+        private float timeSinceAttackStart = 0;
+        private Vector3 attackStartPos;
+        public float attackDuration = 0.25f;
         
         void Awake()
         {
@@ -50,13 +69,8 @@ namespace Ghost
             maxVel = maxInitialVel;
             matInstance = Instantiate<Material>(material);
             GetComponent<SpriteRenderer>().material = matInstance;
-            
-            if (!stopsObj) return;
-            var stops = stopsObj.gameObject.GetComponentsInChildren<GhostStop>();
-            if (stops.Length > 0)
-            {
-                transform.position = stops[0].transform.position;
-            }
+
+            Reset();
         }
 
         private void OnEnable()
@@ -65,7 +79,6 @@ namespace Ghost
             blobs = new List<Vector4>();
             blobVel = new List<Vector3>();
             cachedEyePosition = eyesTransform.position;
-            CloseEyes();
         }
 
         public void OpenEyes()
@@ -93,7 +106,6 @@ namespace Ghost
             {
                 if (stops[curStopIndex].timeTilDepart < 0) // hasn't transitioned yet. do it now
                 {
-                    Debug.Log("hiere");
                     stops[curStopIndex].timeTilDepart = stops[curStopIndex].stopDuration;
                     curStopIndex += 1;
                     if (curStopIndex >= stops.Length)
@@ -118,9 +130,67 @@ namespace Ghost
             }
         }
 
+        void TransitionState(GhostState newState)
+        {
+            if (newState == GhostState.Relaxed)
+            {
+                curState = newState;
+            }
+            else if (newState == GhostState.Alert)
+            {
+                curState = newState;
+                curAlertAmount = 0;
+            }
+            else if (newState == GhostState.Attack)
+            {
+                curState = newState;
+                timeSinceAttackStart = 0;
+                attackStartPos = transform.position;
+            }
+
+            if (newState != GhostState.Alert)
+            {
+                curAlertAmount = 0;
+            }
+        }
+
+        void Reset()
+        {
+            OpenEyes();
+            if (!stopsObj) return;
+            var stops = stopsObj.gameObject.GetComponentsInChildren<GhostStop>();
+            if (stops.Length > 0)
+            {
+                transform.position = stops[0].transform.position;
+            }
+            TransitionState(GhostState.Relaxed);
+        }
+
         void Update()
         {
-            if (Application.isPlaying) MoveGhost();
+            if (Application.isPlaying)
+            {
+                if (curState == GhostState.Relaxed)
+                {
+                    MoveGhost();
+                    curAlertAmount = Mathf.Max(0, curAlertAmount - Time.deltaTime * alertRestoreRate);
+                }
+                else if (curState == GhostState.Alert)
+                {
+                    curAlertAmount += Time.deltaTime;
+                    if (curAlertAmount >= alertDuration)
+                    {
+                        TransitionState(GhostState.Attack);
+                    }
+                }
+                else if (curState == GhostState.Attack)
+                {
+                    timeSinceAttackStart += Time.deltaTime;
+                    if (timeSinceAttackStart > attackDuration) timeSinceAttackStart = attackDuration;
+                    transform.position =
+                        Vector3.Lerp(attackStartPos, new Vector3(), timeSinceAttackStart / attackDuration);
+                }
+            }
             
             //======== render ========
             
@@ -199,6 +269,17 @@ namespace Ghost
             if (Input.GetKeyDown(KeyCode.U))
             {
                 CloseEyes();
+            }
+
+            if (Input.GetKeyDown(KeyCode.I))
+            {
+                TransitionState(GhostState.Alert);
+            }
+
+            if (Input.GetKeyDown(KeyCode.O))
+            {
+                Debug.Log("reset");
+                Reset();
             }
         }
     }
