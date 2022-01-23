@@ -298,6 +298,11 @@ namespace Duality
             }
         }
 
+        public void Kill()
+        {
+            
+        }
+
         private void UpdateMovement()
         {
             var movement = new Vector2();
