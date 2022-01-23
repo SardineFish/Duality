@@ -24,6 +24,7 @@ namespace Ghost
         private List<Vector3> blobVel;
 
         public Animator anim;
+        public Animator questionMarkAnim;
         public Transform eyesTransform;
 
         public float emitInterval = 0.5f;
@@ -140,6 +141,7 @@ namespace Ghost
             {
                 curState = newState;
                 curAlertAmount = 0;
+                if (questionMarkAnim) questionMarkAnim.SetTrigger("Show");
             }
             else if (newState == GhostState.Attack)
             {
@@ -151,6 +153,10 @@ namespace Ghost
             if (newState != GhostState.Alert)
             {
                 curAlertAmount = 0;
+                if (questionMarkAnim)
+                {
+                    questionMarkAnim.SetTrigger("Hide");
+                }
             }
         }
 
