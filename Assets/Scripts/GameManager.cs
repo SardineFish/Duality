@@ -33,6 +33,13 @@ public class GameManager : RuntimeSingleton<GameManager>
         }
     }
 
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.F1))
+            ResetLevel();
+        
+    }
+
     public void LoadNextLevel()
     {
         if(levelLoading)
