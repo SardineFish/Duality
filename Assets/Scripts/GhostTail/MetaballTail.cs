@@ -29,6 +29,14 @@ namespace Ghost
         private float emitCountdown;
         private float maxVel;
         private Vector3 cachedEyePosition;
+
+        [Space(10)]
+        public Transform stopsObj;
+
+        public int curStopIndex = 0;
+
+        public float moveSpeed = 1;
+        
         void Awake()
         {
             // props: xy:=position; w:=radius
@@ -38,6 +46,13 @@ namespace Ghost
             maxVel = maxInitialVel;
             matInstance = Instantiate<Material>(material);
             GetComponent<SpriteRenderer>().material = matInstance;
+            
+            if (!stopsObj) return;
+            var stops = stopsObj.gameObject.GetComponentsInChildren<GhostStop>();
+            if (stops.Length > 0)
+            {
+                transform.position = stops[0].transform.position;
+            }
         }
 
         private void OnEnable()
@@ -61,8 +76,50 @@ namespace Ghost
             maxVel = maxInitialVel * 0.4f;
         }
 
+        void MoveGhost()
+        {
+            if (!stopsObj) return;
+            var stops = stopsObj.gameObject.GetComponentsInChildren<GhostStop>();
+            if (stops.Length == 0) return;
+            if (stops[curStopIndex].timeTilDepart > 0 && (stops[curStopIndex].transform.position - transform.position).magnitude < 0.01f)
+            {
+                stops[curStopIndex].timeTilDepart -= Time.deltaTime;
+            }
+            else
+            {
+                if (stops[curStopIndex].timeTilDepart < 0) // hasn't transitioned yet. do it now
+                {
+                    Debug.Log("hiere");
+                    stops[curStopIndex].timeTilDepart = stops[curStopIndex].stopDuration;
+                    curStopIndex += 1;
+                    if (curStopIndex >= stops.Length)
+                    {
+                        curStopIndex = 0;
+                    }
+                }
+                
+                // move
+                // vec to destination
+                var posDelta = stops[curStopIndex].transform.position - transform.position;//stops[prevStopIndex].transform.position;
+                var maxStep = moveSpeed * Time.deltaTime;
+                
+                if (posDelta.magnitude > maxStep)
+                {
+                    transform.position += posDelta.normalized * maxStep;
+                }
+                else // arrived at stop.
+                {
+                    transform.position = stops[curStopIndex].transform.position;
+                }
+            }
+        }
+
         void Update()
         {
+            if (Application.isPlaying) MoveGhost();
+            
+            //======== render ========
+            
             if (!matInstance) return;
             if (!anim) return;
             if (!eyesTransform) return;

@@ -47,7 +47,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   material: {fileID: 2100000, guid: 9763c3bf4f20d4686b9b54d735e672ac, type: 2}
-  cam: {fileID: 0}
   anim: {fileID: 3554152771525388211}
   eyesTransform: {fileID: 4440683779106692538}
   emitInterval: 0.05
@@ -55,6 +54,10 @@ MonoBehaviour:
   maxInitialVel: 1
   maxLifetime: 0.6
   eyesFollowCoeff: 10
+  color: {r: 1, g: 1, b: 1, a: 1}
+  wind: {x: 0, y: 0}
+  stopsObj: {fileID: 0}
+  moveSpeed: 1
 --- !u!212 &7069808273600006704
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -75,7 +78,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9763c3bf4f20d4686b9b54d735e672ac, type: 2}
+  - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
