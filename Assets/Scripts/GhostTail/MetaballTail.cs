@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Duality;
 using UnityEngine;
 using UnityEngine.Assertions;
 using Random = UnityEngine.Random;
@@ -207,6 +208,7 @@ namespace Ghost
                     if (curAlertAmount >= alertDuration)
                     {
                         TransitionState(GhostState.Attack);
+                        hitPlayerTransform.gameObject.GetComponent<PlayerController>().Kill();
                     }
                 }
                 else if (curState == GhostState.Attack && hitPlayerTransform)
