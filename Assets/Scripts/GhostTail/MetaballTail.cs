@@ -28,6 +28,10 @@ namespace Ghost
         public Transform eyesTransform;
 
         public float emitInterval = 0.5f;
+        [Range(0, 1)]
+        public float emitIntervalJitter = 0.1f;
+
+        public float emitIntervalJitterSpeed = 1;
         public float maxInitialSize = 40;
         public float maxInitialVel = 1;
         public float maxLifetime = 3;
@@ -253,7 +257,7 @@ namespace Ghost
                     Random.Range(-maxVel, maxVel),
                     size
                     ));
-                emitCountdown = emitInterval;
+                emitCountdown = emitInterval * (1 + emitIntervalJitter * Random.Range(-1, 1));
             }
             emitCountdown -= Time.deltaTime;
 

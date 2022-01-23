@@ -368,7 +368,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2958435316653001506, guid: 60ee723c640256d46a7ba7b04cf8943d, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 2.3943336
+      value: 1.53
       objectReference: {fileID: 0}
     - target: {fileID: 2958435316653001506, guid: 60ee723c640256d46a7ba7b04cf8943d, type: 3}
       propertyPath: m_LocalPosition.y
@@ -412,11 +412,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2958435316653001507, guid: 60ee723c640256d46a7ba7b04cf8943d, type: 3}
       propertyPath: m_diamondGravityDir
-      value: -1
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2958435316653001507, guid: 60ee723c640256d46a7ba7b04cf8943d, type: 3}
       propertyPath: m_stageDiamondPos.x
-      value: -2
+      value: -6
+      objectReference: {fileID: 0}
+    - target: {fileID: 2958435316653001507, guid: 60ee723c640256d46a7ba7b04cf8943d, type: 3}
+      propertyPath: m_stageDiamondPos.y
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 60ee723c640256d46a7ba7b04cf8943d, type: 3}

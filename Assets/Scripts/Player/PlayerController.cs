@@ -26,6 +26,7 @@ namespace Duality
         public AnimationClip LiftIdle;
         public AnimationClip LiftWalk;
         public AnimationClip PutDown;
+        public AnimationClip PlayerDead;
     }
 
     enum PlayerState
@@ -295,6 +296,11 @@ namespace Duality
                     GameManager.Instance.CheckForDiamond(selectedBlock);
                 }
             }
+        }
+
+        public void Kill()
+        {
+            
         }
 
         private void UpdateMovement()
