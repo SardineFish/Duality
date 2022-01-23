@@ -3385,7 +3385,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 426c4bde193340fe9b901593eff15cf9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_DontDestroyOnLoad: 1
+  m_DontDestroyOnLoad: 0
   _collisionTile: {fileID: 9020715196978021269}
   _backTile: {fileID: 11400000, guid: 907cf34a0911b4232a191549bdcb21a5, type: 2}
 --- !u!1 &9020715196978021274

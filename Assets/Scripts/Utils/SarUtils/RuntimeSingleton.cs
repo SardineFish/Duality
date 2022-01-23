@@ -25,14 +25,24 @@ namespace SardineFish.Utils
         {
             if (instance && instance != this)
             {
-                Destroy(gameObject);
+                // Destroy(gameObject);
             }
             else
             {
                 if (m_DontDestroyOnLoad)
                     DontDestroyOnLoad(gameObject);
-                instance = this as T;
+                if (gameObject.activeInHierarchy)
+                {
+                    Debug.Log($"singleton {name} initialized");
+                    instance = this as T;
+                }
             }
+        }
+
+        protected virtual void Start()
+        {
+            Debug.Log($"singleton {name} initialized");
+            instance = this as T;
         }
     }
 }

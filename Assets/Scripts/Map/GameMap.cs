@@ -11,10 +11,13 @@ namespace Duality
         private Tilemap _tilemap;
         [SerializeField] private Tilemap _collisionTile;
         [SerializeField] private TileBase _backTile;
-        protected void Awake()
+
+        protected override void Awake()
         {
+            base.Awake();
             _tilemap = GetComponent<Tilemap>();
         }
+
 
         public TileBase GetTileAt(Vector2 pos)
         {
