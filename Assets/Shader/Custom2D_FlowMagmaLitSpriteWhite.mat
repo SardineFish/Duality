@@ -9,7 +9,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: Custom2D_FlowMagmaLitSpriteWhite
   m_Shader: {fileID: 4800000, guid: 268321d642a400440adbaf3d5e71f998, type: 3}
-  m_ShaderKeywords: _ISWHITE_ON
+  m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -57,7 +57,7 @@ Material:
     - _MagmaDistortionSpeed: 0.22
     - _MagmaIntensity: 1.23
     - _OutlineSize: 0.1
-    - _isWhite: 1
+    - _isWhite: 0
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _Flip: {r: 1, g: 1, b: 1, a: 1}
