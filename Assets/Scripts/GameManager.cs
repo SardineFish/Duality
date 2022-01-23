@@ -12,6 +12,9 @@ public class GameManager : RuntimeSingleton<GameManager>
     [SerializeField] private Vector2Int m_stageDiamondPos;
     [SerializeField] private GameObject m_diamondPrefab;
     [SerializeField] private int m_diamondGravityDir;
+    
+    [SerializeField] private Animator m_levelTransition;
+    [SerializeField] private float m_transitionDuration;
 
     private bool levelLoading = false;
 
@@ -35,7 +38,21 @@ public class GameManager : RuntimeSingleton<GameManager>
         Debug.Log("TODO: Load Next Level");
         levelLoading = true;
 
-        SceneManager.LoadScene(m_nextScene);
+        StartCoroutine(LoadLevel(SceneManager.GetActiveScene().buildIndex + 1));
+    }
+
+    public void ReloadCurrentLevel()
+    {
+        StartCoroutine(LoadLevel(SceneManager.GetActiveScene().buildIndex));
+    }
+
+    private IEnumerator LoadLevel(int levelIndex)
+    {
+        m_levelTransition.SetTrigger("Start");
+
+        yield return new WaitForSeconds(m_transitionDuration);
+
+        SceneManager.LoadScene(levelIndex);
     }
 
     private void OnDrawGizmos()
