@@ -39,7 +39,20 @@ public class GameManager : RuntimeSingleton<GameManager>
     {
         if (Input.GetKeyDown(KeyCode.F1))
             ResetLevel();
-        
+        if (Input.GetKeyDown(KeyCode.F2))
+            SceneManager.LoadScene("Level1");
+        if (Input.GetKeyDown(KeyCode.F3))
+            SceneManager.LoadScene("Level2");
+        if (Input.GetKeyDown(KeyCode.F4))
+            SceneManager.LoadScene("Level3");
+        if (Input.GetKeyDown(KeyCode.F5))
+            SceneManager.LoadScene("Level4");
+        if (Input.GetKeyDown(KeyCode.F6))
+            SceneManager.LoadScene("Level5");
+        if (Input.GetKeyDown(KeyCode.F7))
+            SceneManager.LoadScene("Level6");
+        if (Input.GetKeyDown(KeyCode.F8))
+            SceneManager.LoadScene("Level_SP");
     }
 
     public void LoadNextLevel()
@@ -82,4 +95,5 @@ public class GameManager : RuntimeSingleton<GameManager>
         Gizmos.color = Color.green;
         Gizmos.DrawWireSphere(m_DiamondSpawnPos.ToVector3() + new Vector3(.5f, .5f, 0), 0.5f);
     }
+    
 }
