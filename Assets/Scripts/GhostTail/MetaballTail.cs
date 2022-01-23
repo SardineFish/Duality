@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.Assertions;
 using Random = UnityEngine.Random;
 
 namespace Ghost
@@ -60,6 +60,9 @@ namespace Ghost
         private float timeSinceAttackStart = 0;
         private Vector3 attackStartPos;
         public float attackDuration = 0.25f;
+        private Transform hitPlayerTransform = null;
+
+        [Space(10)] public bool isFire = false;
         
         void Awake()
         {
@@ -94,6 +97,8 @@ namespace Ghost
             maxVel = maxInitialVel * 0.4f;
         }
 
+        private Transform lastStopTransform;
+
         void MoveGhost()
         {
             if (!stopsObj) return;
@@ -107,6 +112,7 @@ namespace Ghost
             {
                 if (stops[curStopIndex].timeTilDepart < 0) // hasn't transitioned yet. do it now
                 {
+                    lastStopTransform = stops[curStopIndex].transform;
                     stops[curStopIndex].timeTilDepart = stops[curStopIndex].stopDuration;
                     curStopIndex += 1;
                     if (curStopIndex >= stops.Length)
@@ -127,6 +133,15 @@ namespace Ghost
                 else // arrived at stop.
                 {
                     transform.position = stops[curStopIndex].transform.position;
+                }
+
+                var playerDetector = GetComponentInChildren < GhostViewDetector>();
+                if (playerDetector)
+                {
+                    float t = (transform.position - lastStopTransform.position).magnitude /
+                              (stops[curStopIndex].transform.position - lastStopTransform.position).magnitude;
+                    playerDetector.transform.rotation = Quaternion.Slerp(lastStopTransform.rotation,
+                        stops[curStopIndex].transform.rotation, t);
                 }
             }
         }
@@ -168,13 +183,14 @@ namespace Ghost
             if (stops.Length > 0)
             {
                 transform.position = stops[0].transform.position;
+                lastStopTransform = stops[curStopIndex].transform;
             }
             TransitionState(GhostState.Relaxed);
         }
 
         void Update()
         {
-            if (Application.isPlaying)
+            if (Application.isPlaying && !isFire)
             {
                 if (curState == GhostState.Relaxed)
                 {
@@ -189,12 +205,33 @@ namespace Ghost
                         TransitionState(GhostState.Attack);
                     }
                 }
-                else if (curState == GhostState.Attack)
+                else if (curState == GhostState.Attack && hitPlayerTransform)
                 {
                     timeSinceAttackStart += Time.deltaTime;
                     if (timeSinceAttackStart > attackDuration) timeSinceAttackStart = attackDuration;
                     transform.position =
-                        Vector3.Lerp(attackStartPos, new Vector3(), timeSinceAttackStart / attackDuration);
+                        Vector3.Lerp(attackStartPos, hitPlayerTransform.position, timeSinceAttackStart / attackDuration);
+                }
+
+                var playerDetector = GetComponentInChildren < GhostViewDetector>();
+                if (curState != GhostState.Attack && playerDetector)
+                {
+                    var player = playerDetector.PlayerInView();
+                    if (player)
+                    {
+                        hitPlayerTransform = player;
+                        if (curState == GhostState.Relaxed)
+                        {
+                            TransitionState(GhostState.Alert);
+                        }
+                    }
+                    else
+                    {
+                        if (curState == GhostState.Alert)
+                        {
+                            TransitionState(GhostState.Relaxed);
+                        }
+                    }
                 }
             }
             

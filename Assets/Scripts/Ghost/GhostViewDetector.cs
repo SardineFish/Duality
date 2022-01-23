@@ -51,13 +51,14 @@ public class GhostViewDetector : MonoBehaviour
         UpdateViewMesh();
     }
 
-    bool PlayerInView()
+    public Transform PlayerInView()
     {
+        Debug.DrawLine(transform.position, transform.position + transform.right * m_detectLength, Color.blue);
         RayHitColliders.Clear();
         Vector3 worldPos = transform.position;
         // Vector3 worldRight = Vector3.Scale(transform.parent.right, Vector3.one * transform.lossyScale.x).normalized;
         var worldRight = transform.right;
-        bool viewResult = false;
+        Transform viewResult = null;
         for (int i = 0; i < m_detectRayNum; i++)
         {
             RaycastHit2D ithHit = RaycastWithDebug(worldPos,
@@ -72,7 +73,7 @@ public class GhostViewDetector : MonoBehaviour
 
             if (ithHit && ithHit.transform.CompareTag("Player"))
             {
-                viewResult = true;   
+                viewResult = ithHit.transform;   
             }
         }
         

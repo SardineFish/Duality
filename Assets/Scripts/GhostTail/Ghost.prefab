@@ -105,6 +105,59 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!1 &1743460802911927224
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4238670959387743316}
+  - component: {fileID: 980553707673889499}
+  m_Layer: 0
+  m_Name: playerDetector
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4238670959387743316
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1743460802911927224}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7069808273600006706}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &980553707673889499
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1743460802911927224}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c3a7b9df51946374caf182907373eb72, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_playerLayer:
+    serializedVersion: 2
+    m_Bits: 8
+  m_occlusionLayer:
+    serializedVersion: 2
+    m_Bits: 64
+  m_viewAngle: 0
+  m_detectRayNum: 0
+  m_detectLength: 0
 --- !u!1 &7069808273600006705
 GameObject:
   m_ObjectHideFlags: 0
@@ -136,6 +189,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4440683779106692538}
+  - {fileID: 4238670959387743316}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -155,6 +209,7 @@ MonoBehaviour:
   anim: {fileID: 3554152771525388211}
   questionMarkAnim: {fileID: 223443832599242785}
   eyesTransform: {fileID: 4440683779106692538}
+  playerDetector: {fileID: 980553707673889499}
   emitInterval: 0.05
   maxInitialSize: 40
   maxInitialVel: 1
@@ -174,6 +229,7 @@ MonoBehaviour:
   curAlertAmount: 0
   alertRestoreRate: 0.5
   attackDuration: 0.25
+  isFire: 0
 --- !u!212 &7069808273600006704
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -252,7 +308,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7701515610491846616}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.000000009536743, y: 0, z: -2.342145}
+  m_LocalPosition: {x: 0, y: 0, z: -2.342145}
   m_LocalScale: {x: 0.05, y: 0.05, z: 0.05}
   m_ConstrainProportionsScale: 1
   m_Children:
