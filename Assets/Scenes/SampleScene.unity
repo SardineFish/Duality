@@ -995,6 +995,18 @@ PrefabInstance:
       value: SampleScene
       objectReference: {fileID: 0}
     - target: {fileID: 2958435316653001507, guid: 60ee723c640256d46a7ba7b04cf8943d, type: 3}
+      propertyPath: m_DiamondSpawnPos.x
+      value: -2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2958435316653001507, guid: 60ee723c640256d46a7ba7b04cf8943d, type: 3}
+      propertyPath: m_DiamondSpawnPos.y
+      value: -3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2958435316653001507, guid: 60ee723c640256d46a7ba7b04cf8943d, type: 3}
+      propertyPath: m_DontDestroyOnLoad
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2958435316653001507, guid: 60ee723c640256d46a7ba7b04cf8943d, type: 3}
       propertyPath: m_diamondGravityDir
       value: -1
       objectReference: {fileID: 0}

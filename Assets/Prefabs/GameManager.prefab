@@ -357,10 +357,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 093c96f2cd2212d43bafcd91ffe251f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_DontDestroyOnLoad: 1
-  m_nextScene: 
+  m_DontDestroyOnLoad: 0
+  m_nextScene: SampleScene
   m_stageDiamondPos: {x: 0, y: 0}
-  m_diamondPrefab: {fileID: 4659321656661596656, guid: 44398322094394341be7a533a2cc2643, type: 3}
+  m_DiamondSpawnPos: {x: 0, y: 0}
+  m_diamondPrefab: {fileID: 3559674179211364047, guid: 9d86dad618c08440899cb6ee80b94187, type: 3}
   m_diamondGravityDir: 0
   m_levelTransition: {fileID: 0}
   m_transitionDuration: 0
