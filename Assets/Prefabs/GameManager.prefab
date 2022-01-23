@@ -48,4 +48,5 @@ MonoBehaviour:
   m_currentLevel: 0
   m_stageDiamondPos:
   - {x: 0, y: -2}
-  m_diamondPrefab: {fileID: 4659321656661596656, guid: 44398322094394341be7a533a2cc2643, type: 3}
+  m_diamondPrefab: {fileID: 3559674179211364047, guid: 9d86dad618c08440899cb6ee80b94187, type: 3}
+  m_diamondGravityDir: 0
