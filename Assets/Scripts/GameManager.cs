@@ -13,6 +13,7 @@ public class GameManager : RuntimeSingleton<GameManager>
     [SerializeField] private string m_nextScene;
     [SerializeField] private Vector2Int m_stageDiamondPos;
     [SerializeField] private Vector2Int m_DiamondSpawnPos;
+    [SerializeField] private GameObject DiamondHintObj;
     [SerializeField] private GameObject m_diamondPrefab;
     [SerializeField] private int m_diamondGravityDir;
     
@@ -25,6 +26,7 @@ public class GameManager : RuntimeSingleton<GameManager>
     {
         if (MathUtility.FloorToInt(pos) == m_stageDiamondPos)
         {
+            Destroy(DiamondHintObj);
             var obj = Instantiate(m_diamondPrefab, m_DiamondSpawnPos + new Vector2(0.5f, 0.5f), Quaternion.identity);
             var fire = obj.GetComponent<Fire>();
             fire.GravityDirection = m_diamondGravityDir;
