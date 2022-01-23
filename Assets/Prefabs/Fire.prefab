@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4006429064826472558}
   - component: {fileID: 8702480352008381434}
   m_Layer: 9
-  m_Name: GameObject
+  m_Name: Trigger
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -47,7 +47,7 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Radius: 0.01
+  m_Radius: 0.006
 --- !u!1 &3559674179211364047
 GameObject:
   m_ObjectHideFlags: 0
@@ -102,17 +102,22 @@ MonoBehaviour:
   material: {fileID: 2100000, guid: 9763c3bf4f20d4686b9b54d735e672ac, type: 2}
   anim: {fileID: 7073293515411712845}
   eyesTransform: {fileID: 7988255140613427524}
-  emitInterval: 0.1
-  maxInitialSize: 10
+  emitInterval: 0.16
+  emitIntervalJitter: 0.754
+  emitIntervalJitterSpeed: 1
+  maxInitialSize: 8
   maxInitialVel: 0
-  maxLifetime: 1.3
+  maxLifetime: 1.24
   eyesFollowCoeff: 10
-  shadowThreshold: -0.03
+  shadowThreshold: -0.08
   color: {r: 0.3962264, g: 0.3962264, b: 0.3962264, a: 1}
   ShadowColor: {r: 0.764151, g: 0.764151, b: 0.764151, a: 1}
   EdgeColor: {r: 0.5566038, g: 0.5566038, b: 0.5566038, a: 1}
-  EdgeWidth: 10.5
-  wind: {x: 0, y: 0.06}
+  EdgeWidth: 6.71
+  wind: {x: 0, y: 0.02}
+  stopsObj: {fileID: 0}
+  curStopIndex: 0
+  moveSpeed: 1
 --- !u!212 &3559674179211364046
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -201,7 +206,7 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Radius: 0.01
+  m_Radius: 0.006
 --- !u!114 &7069808272315905209
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -227,6 +232,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   radius: 0.5
+  InitialVelocity: 3
 --- !u!1 &4150847985584976678
 GameObject:
   m_ObjectHideFlags: 0

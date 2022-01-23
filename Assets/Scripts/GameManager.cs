@@ -22,6 +22,8 @@ public class GameManager : RuntimeSingleton<GameManager>
             var obj = Instantiate(m_diamondPrefab, pos + new Vector2(0.5f, 0.5f), Quaternion.identity);
             var fire = obj.GetComponent<Fire>();
             fire.GravityDirection = m_diamondGravityDir;
+            fire.GetComponent<Rigidbody2D>().velocity =
+                fire.GetComponent<Diamond>().InitialVelocity * Vector2.down * m_diamondGravityDir;
         }
     }
 

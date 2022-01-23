@@ -26,6 +26,7 @@ namespace Duality
         public AnimationClip LiftIdle;
         public AnimationClip LiftWalk;
         public AnimationClip PutDown;
+        public AnimationClip PlayerDead;
     }
 
     enum PlayerState
